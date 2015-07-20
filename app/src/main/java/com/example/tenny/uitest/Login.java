@@ -5,6 +5,8 @@ package com.example.tenny.uitest;
  */
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,7 +17,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-public class Login extends Activity{
+public class Login extends ActionBarActivity {
     private EditText username;
     private EditText password;
     private Button login_btn;
@@ -29,6 +31,12 @@ public class Login extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+
+        //to enable action bar
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        //getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+        //getSupportActionBar().setDisplayUseLogoEnabled(true);
+
         message = (TextView) findViewById(R.id.message);
         message.setText("");
         username = (EditText) findViewById(R.id.accounts);
@@ -36,7 +44,7 @@ public class Login extends Activity{
         login_btn = (Button) findViewById(R.id.login_btn);
         login_btn.setOnClickListener(onclick);
         //建立 thread 的物件
-        t = new mythread();
+        //t = new mythread();
     }
 
     View.OnClickListener onclick = new View.OnClickListener() {
@@ -44,7 +52,8 @@ public class Login extends Activity{
         public void onClick(View v) {
             if (username.getText().toString().equals("admin") && password.getText().toString().equals("123")) {
                 //啟動thread
-                t.start();
+                //t.start();
+                runOnUiThread(thRead);
                 Toast.makeText(getApplicationContext(), "Thread started...", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getApplicationContext(), "Wrong Credentials", Toast.LENGTH_SHORT).show();
@@ -52,16 +61,19 @@ public class Login extends Activity{
         }
     };
 
-    class mythread extends Thread{
+    //class mythread extends Thread{
+    Runnable thRead = new Runnable(){
         public void run() {
             try{
-                System.out.println("Waitting to connect......");
+                message.setText("Waitting to connect......");
+                Log.d("Mylog", "Waitting to connect...");
                 //String server=username.getText().toString();
                 //int servPort=1025;
-                Socket socket=new Socket(SERVERIP,SERVERPORT);
+                Socket socket=new Socket(SERVERIP, SERVERPORT);
                 InputStream in=socket.getInputStream();
                 OutputStream out=socket.getOutputStream();
-                System.out.println("Connected!!");
+                message.setText("Connected!!");
+                Log.d("Mylog", "Connected!!");
                 Toast.makeText(getApplicationContext(), "Connected!!", Toast.LENGTH_SHORT).show();
 
                 String str_u = username.getText().toString();
@@ -77,7 +89,7 @@ public class Login extends Activity{
                 byte[] readbyte = new byte[18];
                 in.read(readbyte);
                 str2 = new String(readbyte);
-                if(str2 == "ok") {
+                if(str2.equals("ok")) {
                     Intent intent = new Intent(Login.this, MainMenu.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
@@ -90,5 +102,5 @@ public class Login extends Activity{
                 System.out.println("Error: "+e.getMessage());
             }
         }
-    }
+    };
 }
