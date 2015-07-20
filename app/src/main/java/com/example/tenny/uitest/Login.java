@@ -45,8 +45,7 @@ public class Login extends Activity{
             if (username.getText().toString().equals("admin") && password.getText().toString().equals("123")) {
                 //啟動thread
                 t.start();
-                Toast.makeText(getApplicationContext(), "Redirecting...", Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(getApplicationContext(), "Thread started...", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getApplicationContext(), "Wrong Credentials", Toast.LENGTH_SHORT).show();
             }
