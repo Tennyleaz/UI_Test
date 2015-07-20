@@ -16,8 +16,8 @@ public class Fragment2 extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        MainActivity mainActivity = (MainActivity)activity;
-        value = mainActivity.getGoogleData();
+        MainMenu mainMenu = (MainMenu)activity;
+        value = mainMenu.getGoogleData();
     }
 
     @Override

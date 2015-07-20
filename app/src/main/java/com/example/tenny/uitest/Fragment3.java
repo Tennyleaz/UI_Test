@@ -16,8 +16,8 @@ public class Fragment3 extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        MainActivity mainActivity = (MainActivity)activity;
-        value = mainActivity.getFacebookData();
+        MainMenu mainMenu = (MainMenu)activity;
+        value = mainMenu.getFacebookData();
     }
 
     @Override

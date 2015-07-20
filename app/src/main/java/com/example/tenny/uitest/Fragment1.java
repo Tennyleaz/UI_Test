@@ -16,8 +16,8 @@ public class Fragment1 extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        MainActivity mainActivity = (MainActivity)activity;
-        value = mainActivity.getAppleData();
+        MainMenu mainMenu = (MainMenu)activity;
+        value = mainMenu.getAppleData();
     }
 
     @Override

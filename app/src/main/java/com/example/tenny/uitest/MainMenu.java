@@ -1,15 +1,14 @@
 package com.example.tenny.uitest;
 
 import android.os.Bundle;
-import com.example.tenny.uitest.R;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
-public class MainActivity extends FragmentActivity {
+public class MainMenu extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main_menu);
 
         FragmentTabHost tabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
 

@@ -12,7 +12,15 @@
         android:layout_marginLeft="28.0dip"
         android:layout_marginRight="28.0dip"
         android:layout_marginTop="30.0dip">
-
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize = "44sp"
+            android:gravity="center_horizontal"
+            android:text="Welcome!"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="40.0dip"/>
         <EditText
             android:textSize="16.0sp"
             android:textColor="#ff1d1d1d"
@@ -25,7 +33,7 @@
             android:hint="Your Account"
             android:maxLines="1"
             android:maxLength="16"
-            android:inputType="number"/>
+            android:inputType="text"/>
         <View
             android:background="#ffc0c3c4"
             android:layout_width="fill_parent"
@@ -62,5 +70,15 @@
         android:layout_marginRight="28.0dip"
         android:text="Press To Login"
         android:layout_below="@id/input" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="this is message"
+        android:id="@+id/message"
+        android:textColor="#ffff0000"
+        android:layout_marginTop="71dp"
+        android:layout_below="@+id/login_btn"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
