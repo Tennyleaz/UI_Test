@@ -2,55 +2,65 @@ package com.example.tenny.uitest;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTabHost;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.util.Log;
+
+import com.astuetz.PagerSlidingTabStrip;
+
 public class MainMenu extends FragmentActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.main_menu);
 
-        FragmentTabHost tabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
+        // Get the ViewPager and set it's PagerAdapter so that it can display items
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setAdapter(new SampleFragmentPagerAdapter(getSupportFragmentManager()));
 
-        tabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
-
-        //1
-        tabHost.addTab(tabHost.newTabSpec("Fragment1")
-                        .setIndicator("Fragment1"),
-                Fragment1.class,
-                null);
-        //2
-        tabHost.addTab(tabHost.newTabSpec("Fragment2")
-                        .setIndicator("Fragment2"),
-                Fragment2.class,
-                null);
-        //3
-        tabHost.addTab(tabHost.newTabSpec("Fragment3")
-                        .setIndicator("Fragment3"),
-                Fragment3.class,
-                null);
-        //4
-        //tabHost.addTab(tabHost.newTabSpec("Twitter")
-        //                .setIndicator("Twitter"),
-        //        TwitterFragment.class,
-        //        null);
+        // Give the PagerSlidingTabStrip the ViewPager
+        PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        // Attach the view pager to the tab strip
+        tabsStrip.setViewPager(viewPager);
     }
 
-    /**************************
-     *
-     *
-     *
-     **************************/
-    public String getAppleData(){
-        return "Apple 123";
-    }
-    public String getGoogleData(){
-        return "Google 456";
-    }
-    public String getFacebookData(){
-        return "Facebook 789";
-    }
-    public String getTwitterData(){
-        return "Twitter abc";
+    public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
+        final int PAGE_COUNT = 3;
+        private String tabTitles[] = new String[] { "Tab1", "Tab2", "Tab3" };
+
+        public SampleFragmentPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public int getCount() {
+            return PAGE_COUNT;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Log.d("Mylog", "getItem " + position);
+            switch (position) {
+                case 0:
+                    Log.d("Mylog", "position 0 ");
+                    return PageFragment.newInstance(position + 1);
+                case 1:
+                    Log.d("Mylog", "position 1 ");
+                    return PageFragment2.newInstance(position + 1);
+                case 2:
+                    Log.d("Mylog", "position 2 ");
+                    return PageFragment3.newInstance(position + 1);
+            }
+            return null;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            // Generate title based on item position
+            return tabTitles[position];
+        }
     }
 }
