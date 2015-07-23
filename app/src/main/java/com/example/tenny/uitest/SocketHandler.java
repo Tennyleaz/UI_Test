@@ -5,8 +5,13 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Tenny on 2015/7/23.
@@ -48,12 +53,17 @@ public class SocketHandler {
 
     public static synchronized String getOutput(){
         if(isCreated) {
-            String s = "";
+            String result = "";
             int i;
+            List<Byte> buffer = new ArrayList<Byte>();;
+            //byte[] buffer = new byte[32768];
             byte[] readbyte = new byte[1024];
             try {
                 while((i=in.read(readbyte)) != -1) {
-                    s += new String(readbyte, 0, i);
+                    for(byte b : readbyte) {
+                        buffer.add(new Byte(b));
+                    }
+                    String s= new String(readbyte, 0, i);
                     readbyte = null;
                     readbyte = new byte[1024];
                     Log.d("Mylog", "i=" + i + ", s="+s);
@@ -63,7 +73,8 @@ public class SocketHandler {
             } catch (IOException e) {
                 System.out.println("Error getOutput: " + e.getMessage());
             }
-            return s;
+            result = byteListToString(buffer);
+            return result;
         }
         else
             return null;
@@ -79,5 +90,25 @@ public class SocketHandler {
         }
         else
             Log.e("Mylog", "socket not created, cant write!");
+    }
+
+    private static String byteListToString(List<Byte> l) {
+        if (l == null) {
+            return "";
+        }
+        byte[] array = new byte[l.size()];
+        int i = 0;
+        for (Byte current : l) {
+            array[i] = current;
+            i++;
+        }
+        String s = null;
+        try {
+            s = new String(array, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e){
+            Log.e("Mylog", "UnsupportedEncodingException:"+e);
+        }
+        return s;
     }
 }
