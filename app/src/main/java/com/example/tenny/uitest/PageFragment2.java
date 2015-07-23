@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 // In this case, the fragment displays simple text based on the page
 public class PageFragment2 extends Fragment {
@@ -35,5 +37,21 @@ public class PageFragment2 extends Fragment {
         TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
         tvTitle.setText("Fragment 2 #" + mPage);
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // ---Button view---
+        Button btnGetText = (Button) getActivity()
+                .findViewById(R.id.button);
+        btnGetText.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                TextView lbl = (TextView) getActivity().findViewById(
+                        R.id.fragment1_text);
+                Toast.makeText(getActivity(), lbl.getText(), Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
     }
 }
