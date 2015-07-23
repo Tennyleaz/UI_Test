@@ -11,7 +11,6 @@ import android.util.Log;
 import com.astuetz.PagerSlidingTabStrip;
 
 public class MainMenu extends FragmentActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,8 +27,8 @@ public class MainMenu extends FragmentActivity {
     }
 
     public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
-        final int PAGE_COUNT = 3;
-        private String tabTitles[] = new String[] { "Tab1", "Tab2", "Tab3" };
+        final int PAGE_COUNT = 4;
+        private String tabTitles[] = new String[] { "物料", "理切", "生產", "設備狀態" };
 
         public SampleFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -45,16 +44,21 @@ public class MainMenu extends FragmentActivity {
             Log.d("Mylog", "getItem " + position);
             switch (position) {
                 case 0:
-                    Log.d("Mylog", "position 0 ");
+                    Log.d("Mylog", "position 1 ");
                     return PageFragment.newInstance(position + 1);
                 case 1:
-                    Log.d("Mylog", "position 1 ");
+                    Log.d("Mylog", "position 2 ");
                     return PageFragment2.newInstance(position + 1);
                 case 2:
-                    Log.d("Mylog", "position 2 ");
+                    Log.d("Mylog", "position 3 ");
                     return PageFragment3.newInstance(position + 1);
+                case 3:
+                    Log.d("Mylog", "position 4 ");
+                    return PageFragment4.newInstance(position + 1);
+                default:
+                    return null;
             }
-            return null;
+            //return null;
         }
 
         @Override

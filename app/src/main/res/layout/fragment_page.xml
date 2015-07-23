@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- This is the fragment  to be displayed for a section associated with a tab -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/tvTitle"
-        android:text="Fragment #X"
-        android:layout_width="match_parent"
-        android:layout_height="166dp"
-        android:gravity="center" />
 
-    <TextView
+    <ExpandableListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="fragment1_text"
-        android:id="@+id/fragment1_text"
-        android:layout_gravity="center_horizontal" />
-</LinearLayout>
+        android:id="@+id/expandableListView1"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

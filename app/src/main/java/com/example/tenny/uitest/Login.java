@@ -36,7 +36,7 @@ public class Login extends ActionBarActivity {
     private Button login_btn;
     private TextView message;
     static final String SERVERIP = "140.113.210.29";
-    static final int SERVERPORT = 8000;
+    static final int SERVERPORT = 9000; //8000= echo server, 9000=real server
     private String str1="0",str2="0";
     private static Socket socket;
     private static ProgressDialog pd;
@@ -64,23 +64,9 @@ public class Login extends ActionBarActivity {
         login_btn.setOnClickListener(onclick);
 
         if(!isNetworkConnected()){  //close when not connected
-            /*AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
-            builder.setMessage("Error!")
-                    .setPositiveButton("Y", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // FIRE ZE MISSILES!
-                        }
-                    })
-                    .setNegativeButton("N", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                        }
-                    });
-            builder.create();
-            builder.show();*/
             AlertDialog.Builder dialog = new AlertDialog.Builder(Login.this);
             dialog.setTitle("警告");
-            dialog.setMessage("");
+            dialog.setMessage("無網路連線,\n程式即將關閉");
             dialog.setPositiveButton("OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(
@@ -90,36 +76,28 @@ public class Login extends ActionBarActivity {
                         }
                     });
             dialog.show();
-            Log.d("Mylog", "no network");
+            Log.e("Mylog", "no network");
             //android.os.Process.killProcess(android.os.Process.myPid());
             //System.exit(1);
         }
-
-        pd = ProgressDialog.show(Login.this, "標題", "加載中，請稍後……");
+        else {
+            pd = ProgressDialog.show(Login.this, "LOADING", "Please wait...");
         /* 開啟一個新線程，在新線程裡執行耗時的方法 */
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                InitServer();// 耗時的方法
-                handler.sendEmptyMessage(0);// 執行耗時的方法之後發送消給handler
-            }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    InitServer();// 耗時的方法
+                    handler.sendEmptyMessage(0);// 執行耗時的方法之後發送消給handler
+                }
 
-        }).start();
+            }).start();
+        }
     }
 
     View.OnClickListener onclick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             new LoginTask().execute(username.getText().toString(), password.getText().toString());
-            if (username.getText().toString().equals("admin") && password.getText().toString().equals("123")) {
-                //啟動thread
-                //t.start();
-                //runOnUiThread(thRead);
-                new LoginTask().execute(username.getText().toString(), password.getText().toString());
-                Toast.makeText(getApplicationContext(), "Thread started...", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getApplicationContext(), "Wrong Credentials", Toast.LENGTH_SHORT).show();
-            }
         }
     };
 
@@ -131,37 +109,24 @@ public class Login extends ActionBarActivity {
     }
 
     private void InitServer() {
-        try {
-            socket = new Socket(SERVERIP, SERVERPORT);
-            InputStream in = socket.getInputStream();
-            OutputStream out = socket.getOutputStream();
-            String init = "CONNECT MI_1<END>";
-            out.write(init.getBytes());
-            //receive result
-            byte[] readbyte = new byte[24];
-            int i = in.read(readbyte);
-            str2 = new String(readbyte, 0, i);
-            Log.d("Mylog", str2);
-            if(str2.equals("CONNECT_OK<END>"))
-                connected = 1;
-            else if(str2.equals("CONNECT_WRONG<END>"))
-                connected = 2;
-            else if(str2.equals("CONNECT_EXIST<END>"))
-                connected = 3;
-            else if(str2.equals("CONNECT_REPEAT<END>"))
-                connected = 4;
-            else
-                connected = 0;
-            Log.d("Mylog", "connected=" + connected);
-        }
-        catch (UnknownHostException e)
-        {
-            System.out.println("Error0: "+e.getMessage());
-        }
-        catch(IOException e)
-        {
-            System.out.println("Error1: " + e.getMessage());
-        }
+        socket = SocketHandler.initSocket(SERVERIP, SERVERPORT);
+        String init = "CONNECT MI_2<END>";
+        SocketHandler.writeToSocket(init);
+
+        //receive result
+        str2 = SocketHandler.getOutput();
+        Log.d("Mylog", str2);
+        if (str2.equals("CONNECT_OK<END>"))
+            connected = 1;
+        else if (str2.equals("CONNECT_WRONG<END>"))
+            connected = 2;
+        else if (str2.equals("CONNECT_EXIST<END>"))
+            connected = 3;
+        else if (str2.equals("CONNECT_REPEAT<END>"))
+            connected = 4;
+        else
+            connected = 0;
+        Log.d("Mylog", "connected=" + connected);
     }
 
     static Handler handler = new Handler() {
@@ -173,61 +138,50 @@ public class Login extends ActionBarActivity {
 
     private class LoginTask extends AsyncTask<String, String, String> {
         @Override
-        protected String doInBackground(String... strings){
+        protected String doInBackground(String... strings) {
             Log.d("Mylog", "Waitting to connect...");
             //message.setText("Waitting to connect......");
             publishProgress("Waitting to connect...");
-            try {
-                //socket = new Socket(SERVERIP, SERVERPORT);
-                InputStream in = socket.getInputStream();
-                OutputStream out = socket.getOutputStream();
-                //Log.d("Mylog", "Connected!!");
-                //publishProgress("Connected!!");
+            //socket = new Socket(SERVERIP, SERVERPORT);
+            //InputStream in = socket.getInputStream();
+            //OutputStream out = socket.getOutputStream();
+            //Log.d("Mylog", "Connected!!");
+            //publishProgress("Connected!!");
 
-                String str_u = username.getText().toString();
-                String str_p = password.getText().toString();
+            String str_u = username.getText().toString();
+            String str_p = password.getText().toString();
 
-                byte[] sendstr1 = new byte[21];
-                System.arraycopy(str_u.getBytes(), 0, sendstr1, 0, str_u.length());
-                //out.write(sendstr1);
-                byte[] sendstr2 = new byte[21];
-                System.arraycopy(str_p.getBytes(), 0, sendstr2, 0, str_p.length());
-                //out.write(sendstr2);
-                //connect test
-                //byte[] sendstr3 = new byte[32];
-                //String teststring = "CONNECT MI_1<END>";
-                //System.arraycopy(teststring.getBytes(), 0, sendstr3, 0, teststring.length());
-                //out.write(teststring.getBytes());
+            byte[] sendstr1 = new byte[21];
+            System.arraycopy(str_u.getBytes(), 0, sendstr1, 0, str_u.length());
+            //out.write(sendstr1);
+            byte[] sendstr2 = new byte[21];
+            System.arraycopy(str_p.getBytes(), 0, sendstr2, 0, str_p.length());
+            //out.write(sendstr2);
+            //connect test
+            //byte[] sendstr3 = new byte[32];
+            //String teststring = "CONNECT MI_1<END>";
+            //System.arraycopy(teststring.getBytes(), 0, sendstr3, 0, teststring.length());
+            //out.write(teststring.getBytes());
 
-                //receive result
-                //byte[] readbyte = new byte[24];
-                //int i = in.read(readbyte);
-                //str2 = new String(readbyte, 0, i);
-                //Log.d("Mylog", str2);
+            //receive result
+            //byte[] readbyte = new byte[24];
+            //int i = in.read(readbyte);
+            //str2 = new String(readbyte, 0, i);
+            //Log.d("Mylog", str2);
 
-                if(true) {
-                    Intent intent = new Intent(Login.this, MainMenu.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            if (true) {
+                Intent intent = new Intent(Login.this, MainMenu.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-                    Bundle bundle = new Bundle();
-                    bundle.putString("User", str_u);
-                    bundle.putString("Password", str_p);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                }
-                else{
-                    publishProgress("Wrong username or password.\nPlease try again.");
-                }
+                Bundle bundle = new Bundle();
+                bundle.putString("User", str_u);
+                bundle.putString("Password", str_p);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            } else {
+                publishProgress("Wrong username or password.\nPlease try again.");
             }
-            catch (UnknownHostException e)
-            {
-                System.out.println("Error3: "+e.getMessage());
-            }
-            catch(IOException e)
-            {
-                System.out.println("Error4: "+e.getMessage());
-            }
-            String s="Login Success";
+            String s = "Login Success";
             return s;
         }
         @Override

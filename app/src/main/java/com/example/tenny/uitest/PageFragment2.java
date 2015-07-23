@@ -47,10 +47,6 @@ public class PageFragment2 extends Fragment {
                 .findViewById(R.id.button);
         btnGetText.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                TextView lbl = (TextView) getActivity().findViewById(
-                        R.id.fragment1_text);
-                Toast.makeText(getActivity(), lbl.getText(), Toast.LENGTH_SHORT)
-                        .show();
             }
         });
     }
