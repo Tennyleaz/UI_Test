@@ -91,7 +91,7 @@ public class IOtempActivity extends Activity {
     }
 
     private void QueryItems() {
-        Socket socket = SocketHandler.getSocket();
+        //Socket socket = SocketHandler.getSocket();
         String realname = "";
         String realgroup = "";
         if(Qname.equals("3號倉庫"))
