@@ -60,9 +60,10 @@ public class SocketHandler {
             byte[] readbyte = new byte[1024];
             try {
                 while((i=in.read(readbyte)) != -1) {
-                    for(byte b : readbyte) {
-                        buffer.add(new Byte(b));
+                    for(int j=0; j<i; j++) {
+                        buffer.add(readbyte[j]);
                     }
+                    //to test if <END> received
                     String s= new String(readbyte, 0, i);
                     readbyte = null;
                     readbyte = new byte[1024];
@@ -76,8 +77,10 @@ public class SocketHandler {
             result = byteListToString(buffer);
             return result;
         }
-        else
+        else {
+            Log.e("Mylog", "socket not created, cant get output!");
             return null;
+        }
     }
 
     public static synchronized void writeToSocket(String s){
