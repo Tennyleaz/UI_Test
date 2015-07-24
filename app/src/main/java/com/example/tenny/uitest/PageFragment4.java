@@ -45,13 +45,12 @@ public class PageFragment4 extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        String temps = null;
-        new UpdateTask().execute(temps);
+        new UpdateTask().execute();
     }
 
-    private class UpdateTask extends AsyncTask<String, String, String> {
+    private class UpdateTask extends AsyncTask<Void, String, String> {
         @Override
-        protected String doInBackground(String... strings) {
+        protected String doInBackground(Void... v) {
             UpdateStatus();
             return null;
         }
