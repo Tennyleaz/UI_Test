@@ -9,12 +9,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.net.Socket;
+import java.util.Calendar;
 import java.util.Scanner;
 
 /**
@@ -33,8 +35,8 @@ public class IOtempActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.io_template);
         t = (TextView) findViewById(R.id.tempText);
-        t1 = (TextView) findViewById(R.id.tempText1);
-        t2 = (TextView) findViewById(R.id.tempText2);
+        //t1 = (TextView) findViewById(R.id.tempText1);
+        //t2 = (TextView) findViewById(R.id.tempText2);
         TL = (TableLayout) findViewById(R.id.tab1_table1);
         t.setText("123");
         Intent intent = getIntent();
@@ -69,7 +71,7 @@ public class IOtempActivity extends Activity {
             String line = scanner.nextLine();
             // process the line
             TableRow row = new TableRow(this);
-            row.setBackgroundColor(Color.parseColor("#f3f3f3"));
+            row.setBackgroundColor(Color.parseColor("#bbbbbb"));//f3f3f3
             //set margin
             TableLayout.LayoutParams tableRowParams=
                     new TableLayout.LayoutParams
@@ -80,10 +82,19 @@ public class IOtempActivity extends Activity {
             //process each item
             String[] items = line.split("\t");
             for(int i=0; i<items.length; i++) {
+                /*View v = new View(this);
+                TableRow.LayoutParams tlr1 = new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT);
+                v.setBackgroundColor(Color.parseColor("#bbbbbb"));
+                v.setLayoutParams(tlr1);
+                row.addView(v);*/
+                //
                 TextView tv = new TextView(this);
                 tv.setMaxEms(8);
-                tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                TableRow.LayoutParams tlr = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+                tlr.setMargins(1, 0, 1, 0);
+                tv.setLayoutParams(tlr);
                 tv.setText(items[i]);
+                tv.setBackgroundColor(Color.parseColor("#f3f3f3"));
                 row.addView(tv);
             }
         }
@@ -114,11 +125,18 @@ public class IOtempActivity extends Activity {
         else
             realgroup = null;
 
-        String cmd = "QUERY " + realgroup + " " + realname + "<END>";
+        Calendar c = Calendar.getInstance();
+        //example: QUERY WH_HISTORY 3 2015 07 01<END>
+        String cmd;
+        if(Gname.equals("庫存情形"))
+            cmd = "QUERY WH_NOW " + realname + "<END>";
+        else
+            cmd = "QUERY " + realgroup + " " + realname + " " + c.get(Calendar.YEAR) + " " + (c.get(Calendar.MONTH)+1) + " " + c.get(Calendar.DATE) + "<END>";
+
         SocketHandler.writeToSocket(cmd);
         Log.d("Mylog", "command:" + cmd);
         result = SocketHandler.getOutput();
-        result = result.replaceAll("QUERY_REPLY", "");
+        result = result.replaceAll("QUERY_REPLY\t", "");
         result = result.replaceAll("<N>", "\n");
         result = result.replaceAll("<END>", "");
     }

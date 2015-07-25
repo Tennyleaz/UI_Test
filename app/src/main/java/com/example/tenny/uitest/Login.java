@@ -97,7 +97,10 @@ public class Login extends ActionBarActivity {
     View.OnClickListener onclick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            new LoginTask().execute(username.getText().toString(), password.getText().toString());
+            if(connected == 1)
+                new LoginTask().execute(username.getText().toString(), password.getText().toString());
+            else
+                message.setText("Error:" + connected + " " + str2);
         }
     };
 
