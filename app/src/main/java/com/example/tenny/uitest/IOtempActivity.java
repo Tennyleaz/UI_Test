@@ -82,12 +82,6 @@ public class IOtempActivity extends Activity {
             //process each item
             String[] items = line.split("\t");
             for(int i=0; i<items.length; i++) {
-                /*View v = new View(this);
-                TableRow.LayoutParams tlr1 = new TableRow.LayoutParams(1, TableRow.LayoutParams.WRAP_CONTENT);
-                v.setBackgroundColor(Color.parseColor("#bbbbbb"));
-                v.setLayoutParams(tlr1);
-                row.addView(v);*/
-                //
                 TextView tv = new TextView(this);
                 tv.setMaxEms(8);
                 TableRow.LayoutParams tlr = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);

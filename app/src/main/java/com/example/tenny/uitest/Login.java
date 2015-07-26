@@ -81,7 +81,7 @@ public class Login extends ActionBarActivity {
             //System.exit(1);
         }
         else {
-            pd = ProgressDialog.show(Login.this, "LOADING", "Please wait...");
+            pd = ProgressDialog.show(Login.this, "連線中", "Please wait...");
         /* 開啟一個新線程，在新線程裡執行耗時的方法 */
             new Thread(new Runnable() {
                 @Override

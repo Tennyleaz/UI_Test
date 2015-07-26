@@ -87,7 +87,7 @@ public class PageFragment4 extends Fragment {
             String[] items = values[0].split("\t");
             for(int i=0; i<items.length; i++) {
                 TableRow row = new TableRow(getActivity());
-                row.setBackgroundColor(Color.parseColor("#bbbbbb"));
+                row.setBackgroundColor(Color.parseColor("#dddddd"));
                 //set margin
                 TableLayout.LayoutParams tableRowParams =
                         new TableLayout.LayoutParams
@@ -102,12 +102,33 @@ public class PageFragment4 extends Fragment {
                 onOffSwitch.setLayoutParams(tlr);
                 onOffSwitch.setTextOn("上線");
                 onOffSwitch.setTextOff("離線");
+                if(items[i+1].equals("1"))
+                    onOffSwitch.setChecked(true);
+                else
+                    onOffSwitch.setChecked(false);
                 row.addView(onOffSwitch);
                 //
                 TextView tv = new TextView(getActivity());
                 tv.setText(items[i]);
                 i++;
                 row.addView(tv);
+                //repeat
+                i++;
+                //new switch button
+                Switch onOffSwitch2 = new Switch(getActivity());
+                onOffSwitch2.setLayoutParams(tlr);
+                onOffSwitch2.setTextOn("上線");
+                onOffSwitch2.setTextOff("離線");
+                if(items[i+1].equals("1"))
+                    onOffSwitch2.setChecked(true);
+                else
+                    onOffSwitch2.setChecked(false);
+                row.addView(onOffSwitch2);
+                //
+                TextView tv2 = new TextView(getActivity());
+                tv2.setText(items[i]);
+                i++;
+                row.addView(tv2);
             }
         }
     }
