@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -19,7 +20,7 @@ import java.net.Socket;
 // In this case, the fragment displays simple text based on the page
 public class PageFragment4 extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
-    private TableLayout TL;
+    private TableLayout TL, TL2;
     //private String result;
     private int mPage;
     private AsyncTask task = null;
@@ -44,6 +45,7 @@ public class PageFragment4 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_page4, container, false);
         TL = (TableLayout) view.findViewById(R.id.table4);
+        TL2 = (TableLayout) view.findViewById(R.id.table4_2);
         TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
         tvTitle.setText("設備狀態");
         return view;
@@ -87,7 +89,7 @@ public class PageFragment4 extends Fragment {
             String[] items = values[0].split("\t");
             for(int i=0; i<items.length; i++) {
                 TableRow row = new TableRow(getActivity());
-                row.setBackgroundColor(Color.parseColor("#dddddd"));
+                row.setBackgroundColor(Color.parseColor("#eeeeee"));
                 //set margin
                 TableLayout.LayoutParams tableRowParams =
                         new TableLayout.LayoutParams
@@ -97,16 +99,16 @@ public class PageFragment4 extends Fragment {
                 TL.addView(row);
 
                 //new switch button
-                Switch onOffSwitch = new Switch(getActivity());
-                TableRow.LayoutParams tlr = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-                onOffSwitch.setLayoutParams(tlr);
-                onOffSwitch.setTextOn("上線");
-                onOffSwitch.setTextOff("離線");
+                TableRow.LayoutParams tlr = new TableRow.LayoutParams(45, 45);
+                tlr.setMargins(8, 8, 8, 8);
+
+                ImageView iv1 = new ImageView(getActivity());
                 if(items[i+1].equals("1"))
-                    onOffSwitch.setChecked(true);
+                    iv1.setImageResource(R.drawable.green_circle);
                 else
-                    onOffSwitch.setChecked(false);
-                row.addView(onOffSwitch);
+                    iv1.setImageResource(R.drawable.red_cross);
+                iv1.setLayoutParams(tlr);
+                row.addView(iv1);
                 //
                 TextView tv = new TextView(getActivity());
                 tv.setText(items[i]);
@@ -115,20 +117,23 @@ public class PageFragment4 extends Fragment {
                 //repeat
                 i++;
                 //new switch button
-                Switch onOffSwitch2 = new Switch(getActivity());
-                onOffSwitch2.setLayoutParams(tlr);
-                onOffSwitch2.setTextOn("上線");
-                onOffSwitch2.setTextOff("離線");
+                TableRow row2 = new TableRow(getActivity());
+                row2.setBackgroundColor(Color.parseColor("#eeeeee"));
+                //set margin
+                row2.setLayoutParams(tableRowParams);
+                TL2.addView(row2);
+                ImageView iv2 = new ImageView(getActivity());
                 if(items[i+1].equals("1"))
-                    onOffSwitch2.setChecked(true);
+                    iv2.setImageResource(R.drawable.green_circle);
                 else
-                    onOffSwitch2.setChecked(false);
-                row.addView(onOffSwitch2);
+                    iv2.setImageResource(R.drawable.red_cross);
+                iv2.setLayoutParams(tlr);
+                row2.addView(iv2);
                 //
                 TextView tv2 = new TextView(getActivity());
                 tv2.setText(items[i]);
                 i++;
-                row.addView(tv2);
+                row2.addView(tv2);
             }
         }
     }
