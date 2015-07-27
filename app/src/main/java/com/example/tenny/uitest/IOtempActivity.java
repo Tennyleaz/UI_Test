@@ -23,7 +23,7 @@ import java.util.Scanner;
  * Created by Tenny on 2015/7/23.
  */
 public class IOtempActivity extends Activity {
-    private TextView t;
+    private TextView t, message;
     private static TextView t1, t2;
     static private TableLayout TL;
     private String Qname;
@@ -37,6 +37,7 @@ public class IOtempActivity extends Activity {
         t = (TextView) findViewById(R.id.tempText);
         //t1 = (TextView) findViewById(R.id.tempText1);
         //t2 = (TextView) findViewById(R.id.tempText2);
+        message = (TextView) findViewById(R.id.table_message);
         TL = (TableLayout) findViewById(R.id.tab1_table1);
         t.setText("123");
         Intent intent = getIntent();
@@ -69,6 +70,8 @@ public class IOtempActivity extends Activity {
         Scanner scanner = new Scanner(result);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
+            if(line.contains("QUERY_NULL"))
+                continue;
             // process the line
             TableRow row = new TableRow(this);
             row.setBackgroundColor(Color.parseColor("#bbbbbb"));//f3f3f3
@@ -93,6 +96,13 @@ public class IOtempActivity extends Activity {
             }
         }
         scanner.close();
+
+        if(TL.getChildCount() == 0) {
+            message.setVisibility(View.VISIBLE);
+            message.setText("No Data");
+        }
+        else
+            message.setVisibility(View.GONE);
     }
 
     private void QueryItems() {
@@ -114,8 +124,8 @@ public class IOtempActivity extends Activity {
             realgroup = "WH_HISTORY";
         else if(Gname.equals("庫存情形"))
             realgroup = "WH_NOW";
-        else if(Gname.equals("查詢歷史紀錄"))
-            realgroup = "WH_HISTORY";
+        //else if(Gname.equals("查詢歷史紀錄"))
+        //    realgroup = "WH_HISTORY";
         else
             realgroup = null;
 

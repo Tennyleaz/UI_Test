@@ -113,7 +113,7 @@ public class Login extends ActionBarActivity {
 
     private void InitServer() {
         socket = SocketHandler.initSocket(SERVERIP, SERVERPORT);
-        String init = "CONNECT MI_2<END>";
+        String init = "CONNECT MI_1<END>";
         SocketHandler.writeToSocket(init);
 
         //receive result

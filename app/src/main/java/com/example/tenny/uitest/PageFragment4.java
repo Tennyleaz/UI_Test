@@ -75,7 +75,7 @@ public class PageFragment4 extends Fragment {
                 String s = UpdateStatus();
                 publishProgress(s);
                 try{
-                    Thread.sleep(10000);
+                    Thread.sleep(15000);
                 } catch (InterruptedException e) {
                     Log.e("Mylog", e.toString());
                 }
@@ -86,8 +86,12 @@ public class PageFragment4 extends Fragment {
         }
         @Override
         protected void onProgressUpdate(String... values) {
+            TL.removeAllViews();
+            TL2.removeAllViews();
             String[] items = values[0].split("\t");
             for(int i=0; i<items.length; i++) {
+                if(i > (items.length-4))
+                    break;
                 TableRow row = new TableRow(getActivity());
                 row.setBackgroundColor(Color.parseColor("#eeeeee"));
                 //set margin

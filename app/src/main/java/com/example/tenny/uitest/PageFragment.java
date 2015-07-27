@@ -39,7 +39,7 @@ public class PageFragment extends Fragment {
         children = new String [][] {
                 {"3號倉庫", "5號倉庫", "6號倉庫", "線邊倉"},
                 {"3號倉庫", "5號倉庫", "6號倉庫", "線邊倉"},
-                {"nothing here..."}
+                {"3號倉庫", "5號倉庫", "6號倉庫", "線邊倉"}
         };
     }
 
@@ -124,10 +124,18 @@ public class PageFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Log.d("Mylog", holder.text.getText().toString() + " clicked");
-                    Intent intent = new Intent(getActivity(), IOtempActivity.class);
-                    intent.putExtra("TestName", holder.text.getText().toString());
-                    intent.putExtra("GroupClass", getGroup(groupPosition).toString());
-                    startActivity(intent);
+                    if(getGroup(groupPosition).toString().equals("查詢歷史紀錄")) {
+                        Intent intent = new Intent(getActivity(), HistoryActivity.class);
+                        intent.putExtra("TestName", holder.text.getText().toString());
+                        intent.putExtra("GroupClass", getGroup(groupPosition).toString());
+                        startActivity(intent);
+                    }
+                    else {
+                        Intent intent = new Intent(getActivity(), IOtempActivity.class);
+                        intent.putExtra("TestName", holder.text.getText().toString());
+                        intent.putExtra("GroupClass", getGroup(groupPosition).toString());
+                        startActivity(intent);
+                    }
                 }
             });
             return convertView;

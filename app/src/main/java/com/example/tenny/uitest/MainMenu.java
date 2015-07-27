@@ -1,5 +1,6 @@
 package com.example.tenny.uitest;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -24,11 +25,15 @@ public class MainMenu extends FragmentActivity {
         PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         // Attach the view pager to the tab strip
         tabsStrip.setViewPager(viewPager);
+        tabsStrip.setTextSize(40);
+        tabsStrip.setIndicatorColor(Color.parseColor("#03a9f4"));
     }
 
     public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
-        final int PAGE_COUNT = 4;
-        private String tabTitles[] = new String[] { "物料", "理切", "生產", "設備狀態" };
+        //final int PAGE_COUNT = 4;
+        final int PAGE_COUNT = 2;
+        //private String tabTitles[] = new String[] { "物料", "理切", "生產", "設備狀態" };
+        private String tabTitles[] = new String[] { "物料", "設備狀態" };
 
         public SampleFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -48,7 +53,8 @@ public class MainMenu extends FragmentActivity {
                     return PageFragment.newInstance(position + 1);
                 case 1:
                     Log.d("Mylog", "position 2 ");
-                    return PageFragment2.newInstance(position + 1);
+                    //return PageFragment2.newInstance(position + 1);
+                    return PageFragment4.newInstance(position + 1);
                 case 2:
                     Log.d("Mylog", "position 3 ");
                     return PageFragment3.newInstance(position + 1);
