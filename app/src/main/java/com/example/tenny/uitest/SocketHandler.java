@@ -114,4 +114,20 @@ public class SocketHandler {
         }
         return s;
     }
+
+    public static synchronized void closeSocket() {
+        if(isCreated) {
+            try {
+                socket.close();
+            }
+            catch (UnknownHostException e)
+            {
+                System.out.println("Error3: "+e.getMessage());
+            }
+            catch(IOException e)
+            {
+                System.out.println("Error4: " + e.getMessage());
+            }
+        }
+    }
 }

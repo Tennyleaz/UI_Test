@@ -50,7 +50,7 @@ public class MainMenu extends FragmentActivity {
             switch (position) {
                 case 0:
                     Log.d("Mylog", "position 1 ");
-                    return PageFragment.newInstance(position + 1);
+                    return PageFragment1.newInstance(position + 1);
                 case 1:
                     Log.d("Mylog", "position 2 ");
                     //return PageFragment2.newInstance(position + 1);
@@ -72,5 +72,12 @@ public class MainMenu extends FragmentActivity {
             // Generate title based on item position
             return tabTitles[position];
         }
+
+        /*@Override
+        protected void onDestroy(){
+            super.onDestroy();
+            Log.d("Mylog", "on destroy");
+            finish();
+        }*/
     }
 }

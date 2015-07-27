@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,16 +12,14 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.net.Socket;
 import java.util.Calendar;
 import java.util.Scanner;
 
 /**
  * Created by Tenny on 2015/7/23.
  */
-public class IOtempActivity extends Activity {
+public class QueryActivity extends Activity {
     private TextView t, message;
     private static TextView t1, t2;
     static private TableLayout TL;
@@ -33,7 +30,7 @@ public class IOtempActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.io_template);
+        setContentView(R.layout.query_layout);
         t = (TextView) findViewById(R.id.tempText);
         //t1 = (TextView) findViewById(R.id.tempText1);
         //t2 = (TextView) findViewById(R.id.tempText2);
@@ -44,7 +41,7 @@ public class IOtempActivity extends Activity {
         Qname = intent.getStringExtra("TestName");
         Gname = intent.getStringExtra("GroupClass");
         t.setText(Gname + " " + Qname);
-        pd = ProgressDialog.show(IOtempActivity.this, "LOADING", "Fetching data, \nPlease wait...");
+        pd = ProgressDialog.show(QueryActivity.this, "LOADING", "Fetching data, \nPlease wait...");
         //開啟一個新線程，在新線程裡執行耗時的方法
         new Thread(new Runnable() {
             @Override

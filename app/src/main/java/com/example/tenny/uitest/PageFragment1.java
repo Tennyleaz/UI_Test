@@ -1,7 +1,6 @@
 package com.example.tenny.uitest;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,13 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 // In this case, the fragment displays simple text based on the page
-public class PageFragment extends Fragment {
+public class PageFragment1 extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
     private int mPage;
     View rootView;
@@ -23,10 +20,10 @@ public class PageFragment extends Fragment {
     private String[] groups;
     private String[][] children;
 
-    public static PageFragment newInstance(int page) {
+    public static PageFragment1 newInstance(int page) {
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
-        PageFragment fragment = new PageFragment();
+        PageFragment1 fragment = new PageFragment1();
         fragment.setArguments(args);
         return fragment;
     }
@@ -131,7 +128,7 @@ public class PageFragment extends Fragment {
                         startActivity(intent);
                     }
                     else {
-                        Intent intent = new Intent(getActivity(), IOtempActivity.class);
+                        Intent intent = new Intent(getActivity(), QueryActivity.class);
                         intent.putExtra("TestName", holder.text.getText().toString());
                         intent.putExtra("GroupClass", getGroup(groupPosition).toString());
                         startActivity(intent);
