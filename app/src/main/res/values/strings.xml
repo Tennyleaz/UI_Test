@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UI Test</string>
+    <string name="app_name">平板測試</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>

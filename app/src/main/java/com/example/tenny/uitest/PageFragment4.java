@@ -77,7 +77,7 @@ public class PageFragment4 extends Fragment {
                 try{
                     Thread.sleep(15000);
                 } catch (InterruptedException e) {
-                    Log.e("Mylog", e.toString());
+                    Log.e("Mylog", "Thread in fragment4:" + e.toString());
                 }
                 if (isCancelled())
                     break;

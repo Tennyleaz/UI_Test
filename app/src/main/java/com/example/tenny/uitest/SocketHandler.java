@@ -116,6 +116,7 @@ public class SocketHandler {
     }
 
     public static synchronized void closeSocket() {
+        Log.d("Mylog", "Socket closed");
         if(isCreated) {
             try {
                 socket.close();

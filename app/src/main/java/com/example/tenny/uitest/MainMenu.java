@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.KeyEvent;
 
 import com.astuetz.PagerSlidingTabStrip;
 
@@ -27,6 +28,8 @@ public class MainMenu extends FragmentActivity {
         tabsStrip.setViewPager(viewPager);
         tabsStrip.setTextSize(40);
         tabsStrip.setIndicatorColor(Color.parseColor("#03a9f4"));
+
+
     }
 
     public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
@@ -79,5 +82,20 @@ public class MainMenu extends FragmentActivity {
             Log.d("Mylog", "on destroy");
             finish();
         }*/
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d("Mylog", "back is pressed");
+            SocketHandler.closeSocket();
+            /*try{
+                Thread.sleep(15000);
+            } catch (InterruptedException e) {
+                Log.e("Mylog", "Thread in fragment4:" + e.toString());
+            }*/
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

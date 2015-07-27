@@ -34,7 +34,7 @@ public class Login extends ActionBarActivity {
     private EditText username;
     private EditText password;
     private Button login_btn;
-    private TextView message;
+    private static TextView message;
     static final String SERVERIP = "140.113.210.29";
     static final int SERVERPORT = 9000; //8000= echo server, 9000=real server
     private String str1="0",str2="0";
@@ -152,27 +152,12 @@ public class Login extends ActionBarActivity {
             //publishProgress("Connected!!");
 
             String str_u = username.getText().toString();
-            String str_p = password.getText().toString();
+            String str_p = MD5.getMD5EncryptedString(password.getText().toString());
+            String cmd = "LOGIN TABLET " + str_u + " " + str_p + "<END>";
+            SocketHandler.writeToSocket(cmd);
+            str1 = SocketHandler.getOutput();
 
-            byte[] sendstr1 = new byte[21];
-            System.arraycopy(str_u.getBytes(), 0, sendstr1, 0, str_u.length());
-            //out.write(sendstr1);
-            byte[] sendstr2 = new byte[21];
-            System.arraycopy(str_p.getBytes(), 0, sendstr2, 0, str_p.length());
-            //out.write(sendstr2);
-            //connect test
-            //byte[] sendstr3 = new byte[32];
-            //String teststring = "CONNECT MI_1<END>";
-            //System.arraycopy(teststring.getBytes(), 0, sendstr3, 0, teststring.length());
-            //out.write(teststring.getBytes());
-
-            //receive result
-            //byte[] readbyte = new byte[24];
-            //int i = in.read(readbyte);
-            //str2 = new String(readbyte, 0, i);
-            //Log.d("Mylog", str2);
-
-            if (true) {
+            if (str1.contains("LOGIN_REPLY")) {
                 Intent intent = new Intent(Login.this, MainMenu.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
@@ -182,7 +167,9 @@ public class Login extends ActionBarActivity {
                 intent.putExtras(bundle);
                 startActivity(intent);
             } else {
+                Log.e("Mylog", "Login error:" + str1);
                 publishProgress("Wrong username or password.\nPlease try again.");
+                return  str1;
             }
             String s = "Login Success";
             return s;
@@ -194,6 +181,7 @@ public class Login extends ActionBarActivity {
         @Override
         protected void onPostExecute(String s){
             Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+            //message.setText(s);
         }
     }
 }
