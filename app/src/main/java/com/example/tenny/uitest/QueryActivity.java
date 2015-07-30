@@ -117,7 +117,7 @@ public class QueryActivity extends Activity {
         else
             realname = null;
 
-        if(Gname.equals("進出貨情況"))
+        if(Gname.equals("本日進出貨情況"))
             realgroup = "WH_HISTORY";
         else if(Gname.equals("庫存情形"))
             realgroup = "WH_NOW";
@@ -130,9 +130,9 @@ public class QueryActivity extends Activity {
         //example: QUERY WH_HISTORY 3 2015 07 01<END>
         String cmd;
         if(Gname.equals("庫存情形"))
-            cmd = "QUERY WH_NOW " + realname + "<END>";
+            cmd = "QUERY WH_NOW " + realname + " " + c.get(Calendar.YEAR) + " " + (c.get(Calendar.MONTH)+1) + " " + c.get(Calendar.DATE) + "<END>";
         else
-            cmd = "QUERY " + realgroup + " " + realname + " " + c.get(Calendar.YEAR) + " " + (c.get(Calendar.MONTH)+1) + " " + c.get(Calendar.DATE) + "<END>";
+        cmd = "QUERY " + realgroup + " " + realname + " " + c.get(Calendar.YEAR) + " " + (c.get(Calendar.MONTH)+1) + " " + c.get(Calendar.DATE) + "<END>";
 
         SocketHandler.writeToSocket(cmd);
         Log.d("Mylog", "command:" + cmd);

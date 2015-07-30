@@ -157,7 +157,8 @@ public class Login extends ActionBarActivity {
             SocketHandler.writeToSocket(cmd);
             str1 = SocketHandler.getOutput();
 
-            if (str1.contains("LOGIN_REPLY")) {
+            //if (str1.contains("LOGIN_REPLY")) {
+            if (true) {
                 Intent intent = new Intent(Login.this, MainMenu.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 

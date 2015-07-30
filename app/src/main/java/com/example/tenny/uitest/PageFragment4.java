@@ -103,8 +103,8 @@ public class PageFragment4 extends Fragment {
                 TL.addView(row);
 
                 //new switch button
-                TableRow.LayoutParams tlr = new TableRow.LayoutParams(45, 45);
-                tlr.setMargins(8, 8, 8, 8);
+                TableRow.LayoutParams tlr = new TableRow.LayoutParams(32, 32);
+                tlr.setMargins(6, 6, 6, 6);
 
                 ImageView iv1 = new ImageView(getActivity());
                 if(items[i+1].equals("1"))
@@ -116,9 +116,10 @@ public class PageFragment4 extends Fragment {
                 //
                 TextView tv = new TextView(getActivity());
                 tv.setText(items[i]);
+                tv.setTextSize(20);
                 i++;
                 row.addView(tv);
-                //repeat
+                //repeat 2nd table column
                 i++;
                 //new switch button
                 TableRow row2 = new TableRow(getActivity());
@@ -136,8 +137,9 @@ public class PageFragment4 extends Fragment {
                 //
                 TextView tv2 = new TextView(getActivity());
                 tv2.setText(items[i]);
-                i++;
+                tv2.setTextSize(20);
                 row2.addView(tv2);
+                i++;
             }
         }
     }

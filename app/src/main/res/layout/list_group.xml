@@ -32,7 +32,7 @@
             android:paddingLeft="1dip"
             android:paddingTop="1dip"
             android:textColor="#3f51b5"
-            android:textSize="16dp"
+            android:textSize="18dp"
             android:textStyle="bold"
             tools:ignore="SpUsage" />
 

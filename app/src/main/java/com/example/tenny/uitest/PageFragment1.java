@@ -33,7 +33,7 @@ public class PageFragment1 extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPage = getArguments().getInt(ARG_PAGE);
-        groups = new String[] {"進出貨情況", "庫存情形", "查詢歷史紀錄"};
+        groups = new String[] {"本日進出貨情況", "庫存情形", "查詢歷史紀錄"};
         children = new String [][] {
                 {"3號倉庫", "5號倉庫", "6號倉庫", "線邊倉"},
                 {"3號倉庫", "5號倉庫", "6號倉庫", "線邊倉"},
@@ -122,14 +122,14 @@ public class PageFragment1 extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Log.d("Mylog", holder.text.getText().toString() + " clicked");
-                    if(getGroup(groupPosition).toString().equals("查詢歷史紀錄")) {
-                        Intent intent = new Intent(getActivity(), HistoryActivity.class);
+                    if(getGroup(groupPosition).toString().equals("本日進出貨情況")) {
+                        Intent intent = new Intent(getActivity(), QueryActivity.class);
                         intent.putExtra("TestName", holder.text.getText().toString());
                         intent.putExtra("GroupClass", getGroup(groupPosition).toString());
                         startActivity(intent);
                     }
                     else {
-                        Intent intent = new Intent(getActivity(), QueryActivity.class);
+                        Intent intent = new Intent(getActivity(), HistoryActivity.class);  //庫存情形, 查詢歷史紀錄
                         intent.putExtra("TestName", holder.text.getText().toString());
                         intent.putExtra("GroupClass", getGroup(groupPosition).toString());
                         startActivity(intent);
