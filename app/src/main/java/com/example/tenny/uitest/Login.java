@@ -35,7 +35,7 @@ public class Login extends ActionBarActivity {
     private EditText password;
     private Button login_btn;
     private static TextView message;
-    static final String SERVERIP = "140.113.210.29";
+    static final String SERVERIP = "140.113.167.14";
     static final int SERVERPORT = 9000; //8000= echo server, 9000=real server
     private String str1="0",str2="0";
     private static Socket socket;

@@ -141,7 +141,7 @@ public class HistoryActivity extends Activity {
                     if(i==0)
                         items[i] = items[i].replaceAll(myyear + "/", "");
                     TextView tv = new TextView(this);
-                    tv.setMaxEms(8);
+                    tv.setMaxEms(12);
                     TableRow.LayoutParams tlr = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
                     tlr.setMargins(1, 0, 1, 0);
                     tv.setLayoutParams(tlr);

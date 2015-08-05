@@ -33,9 +33,9 @@ public class MainMenu extends FragmentActivity {
     }
 
     public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
-        final int PAGE_COUNT = 4;
+        final int PAGE_COUNT = 3;
         //final int PAGE_COUNT = 2;
-        private String tabTitles[] = new String[] { "物料", "理切", "生產", "設備狀態" };
+        private String tabTitles[] = new String[] { "物料", "生產", "設備狀態" };
         //private String tabTitles[] = new String[] { "物料", "設備狀態" };
 
         public SampleFragmentPagerAdapter(FragmentManager fm) {
@@ -60,10 +60,10 @@ public class MainMenu extends FragmentActivity {
                     //return PageFragment4.newInstance(position + 1);
                 case 2:
                     Log.d("Mylog", "position 3 ");
-                    return PageFragment3.newInstance(position + 1);
-                case 3:
-                    Log.d("Mylog", "position 4 ");
                     return PageFragment4.newInstance(position + 1);
+                //case 3:
+                //    Log.d("Mylog", "position 4 ");
+                //    return PageFragment4.newInstance(position + 1);
                 default:
                     return null;
             }

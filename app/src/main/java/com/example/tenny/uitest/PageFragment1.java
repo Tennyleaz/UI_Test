@@ -57,7 +57,7 @@ public class PageFragment1 extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         lv = (ExpandableListView) view.findViewById(R.id.expandableListView1);
         lv.setAdapter(new ExpandableListAdapter(groups, children));
-        lv.setGroupIndicator(null);
+        //lv.setGroupIndicator(null);
     }
 
     public class ExpandableListAdapter extends BaseExpandableListAdapter {
