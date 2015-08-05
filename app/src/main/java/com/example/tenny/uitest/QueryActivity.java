@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -25,8 +27,10 @@ public class QueryActivity extends Activity {
     static private TableLayout TL;
     private String Qname;
     private String Gname;
+    private String realname;
     static private String result, result2, result3;
     private static ProgressDialog pd;
+    private AsyncTask task = null;
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -59,6 +63,7 @@ public class QueryActivity extends Activity {
             //t1.setText(result);
             update();
             pd.dismiss();// 關閉ProgressDialog
+            task = new UpdateTask().execute();
         }
     };
 
@@ -104,7 +109,7 @@ public class QueryActivity extends Activity {
 
     private void QueryItems() {
         //Socket socket = SocketHandler.getSocket();
-        String realname = "";
+        //String realname = "";
         String realgroup = "";
         if(Qname.equals("3號倉庫"))
             realname = "3";
@@ -140,5 +145,84 @@ public class QueryActivity extends Activity {
         result = result.replaceAll("QUERY_REPLY\t", "");
         result = result.replaceAll("<N>", "\n");
         result = result.replaceAll("<END>", "");
+    }
+
+    private class UpdateTask extends AsyncTask<Void, String, String> {
+        @Override
+        protected String doInBackground(Void... v) {
+            //boolean exit = false;
+            while(!isCancelled()){
+                try {
+                    //Thread.sleep(10000);
+                    Log.d("Mylog", "UpdateTask do...");
+                    String s = UpdateStatus();
+                    publishProgress(s);
+                    /*if (isCancelled()) {
+                        Log.d("Mylog", "UpdateTask isCancelled()");
+                        SocketHandler.closeAndRestartSocket();
+                        break;
+                    }*/
+                //} catch (InterruptedException e) {
+                //    Log.e("Mylog", "Thread in QueryActivity::UpdateTask:" + e.toString());
+                } catch (Exception e) {
+                    Log.e("Mylog", e.toString(), e);
+                }
+            }
+            //SocketHandler.closeAndRestartSocket();
+            return null;
+        }
+        @Override
+        protected void onProgressUpdate(String... values) {
+            Scanner scanner = new Scanner(values[0]);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if(line.contains("UPDATE_WH_NOW"))
+                    continue;
+                message.setVisibility(View.GONE);
+                // process the line
+                TableRow row = new TableRow(QueryActivity.this);
+                row.setBackgroundColor(Color.parseColor("#bbbbbb"));//f3f3f3
+                //set margin
+                TableLayout.LayoutParams tableRowParams=
+                        new TableLayout.LayoutParams
+                                (TableLayout.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT);
+                tableRowParams.setMargins(1, 1, 1, 1);
+                row.setLayoutParams(tableRowParams);
+                TL.addView(row, 0);
+                //process each item
+                String[] items = line.split("\t");
+                for(int i=0; i<items.length; i++) {
+                    TextView tv = new TextView(QueryActivity.this);
+                    tv.setMaxEms(8);
+                    TableRow.LayoutParams tlr = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+                    tlr.setMargins(1, 0, 1, 0);
+                    tv.setLayoutParams(tlr);
+                    tv.setText(items[i]);
+                    tv.setBackgroundColor(Color.parseColor("#f3f3f3"));
+                    row.addView(tv);
+                }
+            }
+            scanner.close();
+        }
+    }
+
+    private String UpdateStatus() {
+        String result;
+        result = SocketHandler.getOutput();
+        Log.d("Mylog", "receive:" + result);
+        result = result.replaceAll("UPDATE_WH_HISTORY\t" + realname + "\t", "");
+        result = result.replaceAll("<N>", "\n");
+        result = result.replaceAll("<END>", "");
+        return result;
+    }
+
+    public void onPause() {
+        super.onPause();
+        Log.d("Mylog", "Query avtivity paused");
+        if(task!=null) {
+            Log.d("Mylog", "task.cancel(true);");
+            //SocketHandler.closeAndRestartSocket();
+            task.cancel(true);
+        }
     }
 }

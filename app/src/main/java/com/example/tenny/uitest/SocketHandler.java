@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
@@ -21,6 +22,8 @@ public class SocketHandler {
     private static boolean isCreated = false;
     private static InputStream in = null;
     private static OutputStream out = null;
+    private static String ip;
+    private static int port;
 
     public static synchronized Socket getSocket(){
         if(isCreated)
@@ -31,10 +34,14 @@ public class SocketHandler {
 
     public static synchronized Socket initSocket(String SERVERIP, int SERVERPORT){
         try {
-            socket = new Socket(SERVERIP, SERVERPORT);
+            ip = SERVERIP;
+            port = SERVERPORT;
+            socket = new Socket();
+            socket.connect(new InetSocketAddress(ip, port));
             isCreated = true;
             in = socket.getInputStream();
             out = socket.getOutputStream();
+            socket.setSoTimeout(3000);
         }
         catch (UnknownHostException e)
         {
@@ -115,11 +122,40 @@ public class SocketHandler {
         return s;
     }
 
+    public static synchronized void closeAndRestartSocket() {
+        Log.d("Mylog", "Socket to be restarted");
+        if(isCreated) {
+            try {
+                socket.close();
+                socket = new Socket();
+                socket.connect(new InetSocketAddress(ip, port));
+                in = socket.getInputStream();
+                out = socket.getOutputStream();
+                socket.setSoTimeout(1000);
+                Log.d("Mylog", "Socket is restarted!");
+                String init = "CONNECT MI_1<END>";
+                SocketHandler.writeToSocket(init);
+                SocketHandler.getOutput();
+                /*socket.shutdownInput();
+                in = socket.getInputStream();*/
+            }
+            catch (UnknownHostException e)
+            {
+                System.out.println("Error5: "+e.getMessage());
+            }
+            catch(IOException e)
+            {
+                System.out.println("Error6 " + e.getMessage());
+            }
+        }
+    }
+
     public static synchronized void closeSocket() {
         Log.d("Mylog", "Socket closed");
         if(isCreated) {
             try {
                 socket.close();
+                isCreated = false;
             }
             catch (UnknownHostException e)
             {

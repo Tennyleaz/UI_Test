@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
@@ -36,6 +37,8 @@ public class HistoryActivity extends Activity {
     static private List<String> result;
     private static ProgressDialog pd;
     private int mymonth, myyear, mydate;
+    private String realgroup, realname;
+    private AsyncTask task = null;
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -110,6 +113,7 @@ public class HistoryActivity extends Activity {
             Log.d("Mylog", "handleMessage is called");
             updateUI();
             pd.dismiss();// 關閉ProgressDialog
+            task = new UpdateTask().execute();
         }
     };
 
@@ -166,8 +170,6 @@ public class HistoryActivity extends Activity {
     private void QueryItems() {
         //Socket socket = SocketHandler.getSocket();
         result.clear();
-        String realname = "";
-        String realgroup = "";
         if(Qname.equals("3號倉庫"))
             realname = "3";
         else if(Qname.equals("5號倉庫"))
@@ -199,5 +201,87 @@ public class HistoryActivity extends Activity {
             result.add(output);
         //}
         Log.d("Mylog", "Query done.");
+    }
+
+    private class UpdateTask extends AsyncTask<Void, String, String> {
+        @Override
+        protected String doInBackground(Void... v) {
+            //boolean exit = false;
+            while(!isCancelled()){
+                try {
+                    //Thread.sleep(10000);
+                    Log.d("Mylog", "UpdateTask do...");
+                    String s = UpdateStatus();
+                    publishProgress(s);
+                    /*if (isCancelled()) {
+                        Log.d("Mylog", "UpdateTask isCancelled()");
+                        SocketHandler.closeAndRestartSocket();
+                        break;
+                    }*/
+                    //} catch (InterruptedException e) {
+                    //    Log.e("Mylog", "Thread in QueryActivity::UpdateTask:" + e.toString());
+                } catch (Exception e) {
+                    Log.e("Mylog", e.toString(), e);
+                }
+            }
+            //SocketHandler.closeAndRestartSocket();
+            return null;
+        }
+        @Override
+        protected void onProgressUpdate(String... values) {
+            Scanner scanner = new Scanner(values[0]);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if(line.contains("UPDATE_WH_HISTORY")) {  //update 進出貨情況
+                    message.setVisibility(View.GONE);
+                    // process the line
+                    TableRow row = new TableRow(HistoryActivity.this);
+                    row.setBackgroundColor(Color.parseColor("#bbbbbb"));//f3f3f3
+                    //set margin
+                    TableLayout.LayoutParams tableRowParams =
+                            new TableLayout.LayoutParams
+                                    (TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
+                    tableRowParams.setMargins(1, 1, 1, 1);
+                    row.setLayoutParams(tableRowParams);
+                    TL.addView(row, 0);
+                    //process each item
+                    String[] items = line.split("\t");
+                    for (int i = 0; i < items.length; i++) {
+                        TextView tv = new TextView(HistoryActivity.this);
+                        tv.setMaxEms(8);
+                        TableRow.LayoutParams tlr = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+                        tlr.setMargins(1, 0, 1, 0);
+                        tv.setLayoutParams(tlr);
+                        tv.setText(items[i]);
+                        tv.setBackgroundColor(Color.parseColor("#f3f3f3"));
+                        row.addView(tv);
+                    }
+                }
+                else if(line.contains("UPDATE_WH_NOW")) {  //update 存貨情況
+
+                }
+            }
+            scanner.close();
+        }
+    }
+
+    private String UpdateStatus() {
+        String result;
+        result = SocketHandler.getOutput();
+        Log.d("Mylog", "receive:" + result);
+        result = result.replaceAll("UPDATE_" + realgroup + realname + "\t", "");
+        result = result.replaceAll("<N>", "\n");
+        result = result.replaceAll("<END>", "");
+        return result;
+    }
+
+    public void onPause() {
+        super.onPause();
+        Log.d("Mylog", "Query avtivity paused");
+        if(task!=null) {
+            Log.d("Mylog", "task.cancel(true);");
+            //SocketHandler.closeAndRestartSocket();
+            task.cancel(true);
+        }
     }
 }
