@@ -80,6 +80,8 @@ public class HistoryActivity extends Activity {
                         @Override
                         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                             if (view.isShown()) {
+                                if(task!=null)
+                                    task.cancel(true);
                                 pd = ProgressDialog.show(HistoryActivity.this, "LOADING", "Fetching data, \nPlease wait...");
                                 Log.d("Mylog", "Date selected.");
                                 // 完成選擇，顯示日期
@@ -102,7 +104,8 @@ public class HistoryActivity extends Activity {
                     c.get(Calendar.MONTH),
                     c.get(Calendar.DAY_OF_MONTH));
             dpd.getDatePicker().setCalendarViewShown(false);
-            dpd.show();
+
+                        dpd.show();
         }
     };
 
@@ -161,9 +164,11 @@ public class HistoryActivity extends Activity {
             message.setVisibility(View.VISIBLE);
             message.setText("No Data");
         }
-        else
-            message.setVisibility(View.GONE);
-
+        else {
+            //message.setVisibility(View.GONE);
+            Calendar c = Calendar.getInstance();
+            message.setText("最後更新：" + c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH)+1) + "-" + c.get(Calendar.DATE)  + " " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND));
+        }
 
     }
 
@@ -193,7 +198,7 @@ public class HistoryActivity extends Activity {
             String cmd;
             cmd = "QUERY " + realgroup + " " + realname + " " + myyear + " " + mymonth + " " + mydate + "<END>";
             SocketHandler.writeToSocket(cmd);
-            Log.d("Mylog", "command:" + cmd);
+            Log.d("Mylog", "QueryItems::command:" + cmd);
             String output = SocketHandler.getOutput();
             output = output.replaceAll("QUERY_REPLY\t", "");
             output = output.replaceAll("<N>", "\n");

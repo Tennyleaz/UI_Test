@@ -103,8 +103,11 @@ public class QueryActivity extends Activity {
             message.setVisibility(View.VISIBLE);
             message.setText("No Data");
         }
-        else
-            message.setVisibility(View.GONE);
+        else {
+            //message.setVisibility(View.GONE);
+            Calendar c = Calendar.getInstance();
+            message.setText("最後更新：" + c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH)+1) + "-" + c.get(Calendar.DATE)  + " " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND));
+        }
     }
 
     private void QueryItems() {

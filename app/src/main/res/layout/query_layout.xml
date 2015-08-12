@@ -46,7 +46,7 @@
                 android:background="#ffbbbbbb"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="25dp">
             </TableLayout>
 
             <TextView
@@ -56,7 +56,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:text="New Text2"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="30dp"
                 android:visibility="gone"
                 android:layout_below="@+id/tab1_table1"/>
 
