@@ -181,7 +181,7 @@ public class QueryActivity extends Activity {
                 String line = scanner.nextLine();
                 if(line.contains("UPDATE_WH_NOW"))
                     continue;
-                message.setVisibility(View.GONE);
+                //message.setVisibility(View.GONE);
                 // process the line
                 TableRow row = new TableRow(QueryActivity.this);
                 row.setBackgroundColor(Color.parseColor("#bbbbbb"));//f3f3f3
@@ -206,7 +206,10 @@ public class QueryActivity extends Activity {
                 }
             }
             scanner.close();
+            Calendar c = Calendar.getInstance();
+            message.setText("最後更新：" + c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH) + 1) + "-" + c.get(Calendar.DATE) + " " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND));
         }
+
     }
 
     private String UpdateStatus() {

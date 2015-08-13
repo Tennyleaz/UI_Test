@@ -39,6 +39,9 @@ public class HistoryActivity extends Activity {
     private int mymonth, myyear, mydate;
     private String realgroup, realname;
     private AsyncTask task = null;
+    private boolean isImport;
+    private String importItemName;
+    private int importNumber;
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -234,11 +237,12 @@ public class HistoryActivity extends Activity {
         }
         @Override
         protected void onProgressUpdate(String... values) {
+            //if
             Scanner scanner = new Scanner(values[0]);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if(line.contains("UPDATE_WH_HISTORY")) {  //update 進出貨情況
-                    message.setVisibility(View.GONE);
+                if(realgroup.equals("WH_HISTORY")) {  //update 進出貨情況
+                    //message.setVisibility(View.GONE);
                     // process the line
                     TableRow row = new TableRow(HistoryActivity.this);
                     row.setBackgroundColor(Color.parseColor("#bbbbbb"));//f3f3f3
@@ -262,21 +266,66 @@ public class HistoryActivity extends Activity {
                         row.addView(tv);
                     }
                 }
-                else if(line.contains("UPDATE_WH_NOW")) {  //update 存貨情況
-
+                else if(realgroup.equals("WH_NOW")) {  //update 庫存情形
+                    for(int i = 0, j = TL.getChildCount(); i < j; i++) {
+                        TableRow row = (TableRow)TL.getChildAt(i);
+                        TextView tv = (TextView) row.getChildAt(0);
+                        TextView number = (TextView) row.getChildAt(2);
+                        if(tv.getText().equals(importItemName)) {
+                            //Log.d("Mylog", "tv is " + tv.getText().toString());
+                            //Log.d("Mylog", "number is " + number.getText().toString());
+                            /*int num = Integer.valueOf(number.getText().toString());
+                            if(isImport)
+                                num += importNumber;
+                            else
+                                num -= importNumber;*/
+                            number.setText(Integer.toString(importNumber));
+                            break;
+                        }
+                    }
+                }
+                else {
+                    Log.e("Mylog", "Something is wrong!!! onProgressUpdate");
                 }
             }
             scanner.close();
+            Calendar c = Calendar.getInstance();
+            message.setVisibility(View.VISIBLE);
+            message.setText("最後更新：" + c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH) + 1) + "-" + c.get(Calendar.DATE) + " " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND));
         }
     }
 
-    private String UpdateStatus() {
+    private String UpdateStatus() {   //realgroup: UPDATE_WH_NOW = 庫存情形    UPDATE_WH_HISTORY=進出貨
         String result;
         result = SocketHandler.getOutput();
-        Log.d("Mylog", "receive:" + result);
-        result = result.replaceAll("UPDATE_" + realgroup + realname + "\t", "");
-        result = result.replaceAll("<N>", "\n");
-        result = result.replaceAll("<END>", "");
+        if(result.length() <= 0)
+            return "";
+
+        String[] items = result.split("\t");
+
+        if(result.contains("UPDATE_WH_HISTORY")) {
+            if (items[3].equals("收料")) {
+                isImport = true;
+            } else if (items[3].equals("出料")) {
+                isImport = false;
+            }
+        }
+
+        if(realgroup.equals("WH_HISTORY") && result.contains("UPDATE_WH_HISTORY")) {
+            Log.d("Mylog", "進出貨 receive:" + result);
+            result = result.replaceAll("UPDATE_" + realgroup + realname + "\t", "");
+            result = result.replaceAll("<N>", "\n");
+            result = result.replaceAll("<END>", "");
+        }
+        else if(realgroup.equals("WH_NOW") && result.contains("UPDATE_WH_NOW")) {
+            Log.d("Mylog", "庫存更新 receive:" + result);
+            importItemName = items[2];
+            importNumber = (int) Double.parseDouble(items[4]);
+            Log.d("Mylog", "now " + items[2] + " " + importNumber);
+        }
+        else {
+            Log.e("Mylog", "Something is wrong!!! realgroup:" + realgroup);
+        }
         return result;
     }
 
