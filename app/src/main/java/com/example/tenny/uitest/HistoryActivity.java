@@ -285,7 +285,7 @@ public class HistoryActivity extends Activity {
                     }
                 }
                 else {
-                    Log.e("Mylog", "Something is wrong!!! onProgressUpdate");
+                    //Log.e("Mylog", "Something is wrong!!! onProgressUpdate");
                 }
             }
             scanner.close();
