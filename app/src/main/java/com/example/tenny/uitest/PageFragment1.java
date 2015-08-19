@@ -124,13 +124,13 @@ public class PageFragment1 extends Fragment {
                     Log.d("Mylog", holder.text.getText().toString() + " clicked");
                     if(getGroup(groupPosition).toString().equals("本日進出貨情況")) {
                         Intent intent = new Intent(getActivity(), QueryActivity.class);
-                        intent.putExtra("TestName", holder.text.getText().toString());
+                        intent.putExtra("HouseName", holder.text.getText().toString());
                         intent.putExtra("GroupClass", getGroup(groupPosition).toString());
                         startActivity(intent);
                     }
                     else {
                         Intent intent = new Intent(getActivity(), HistoryActivity.class);  //庫存情形, 查詢歷史紀錄
-                        intent.putExtra("TestName", holder.text.getText().toString());
+                        intent.putExtra("HouseName", holder.text.getText().toString());
                         intent.putExtra("GroupClass", getGroup(groupPosition).toString());
                         startActivity(intent);
                     }

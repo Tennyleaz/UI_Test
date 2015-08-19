@@ -20,12 +20,14 @@ import java.util.Scanner;
 
 /**
  * Created by Tenny on 2015/7/23.
+ * //本日進出貨情況
+ * WH_HISTORY & SH_HISTORY
  */
 public class QueryActivity extends Activity {
     private TextView t, message;
     private static TextView t1, t2;
     static private TableLayout TL;
-    private String Qname;
+    private String Qname;  //house name
     private String Gname;
     private String realname;
     static private String result, result2, result3;
@@ -42,7 +44,7 @@ public class QueryActivity extends Activity {
         TL = (TableLayout) findViewById(R.id.tab1_table1);
         t.setText("123");
         Intent intent = getIntent();
-        Qname = intent.getStringExtra("TestName");
+        Qname = intent.getStringExtra("HouseName");
         Gname = intent.getStringExtra("GroupClass");
         t.setText(Gname + " " + Qname);
         pd = ProgressDialog.show(QueryActivity.this, "LOADING", "Fetching data, \nPlease wait...");
@@ -87,8 +89,12 @@ public class QueryActivity extends Activity {
             //process each item
             String[] items = line.split("\t");
             for(int i=0; i<items.length; i++) {
+                if(i==0) {
+                    Calendar c = Calendar.getInstance();
+                    items[i] = items[i].replaceAll(c.get(Calendar.YEAR) + "/", "");
+                }
                 TextView tv = new TextView(this);
-                tv.setMaxEms(8);
+                tv.setMaxEms(12);
                 TableRow.LayoutParams tlr = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
                 tlr.setMargins(1, 0, 1, 0);
                 tv.setLayoutParams(tlr);
@@ -104,7 +110,7 @@ public class QueryActivity extends Activity {
             message.setText("No Data");
         }
         else {
-            //message.setVisibility(View.GONE);
+            message.setVisibility(View.VISIBLE);
             Calendar c = Calendar.getInstance();
             message.setText("最後更新：" + c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH)+1) + "-" + c.get(Calendar.DATE)  + " " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND));
         }
@@ -137,10 +143,18 @@ public class QueryActivity extends Activity {
         Calendar c = Calendar.getInstance();
         //example: QUERY WH_HISTORY 3 2015 07 01<END>
         String cmd;
-        if(Gname.equals("庫存情形"))
-            cmd = "QUERY WH_NOW " + realname + " " + c.get(Calendar.YEAR) + " " + (c.get(Calendar.MONTH)+1) + " " + c.get(Calendar.DATE) + "<END>";
-        else
-        cmd = "QUERY " + realgroup + " " + realname + " " + c.get(Calendar.YEAR) + " " + (c.get(Calendar.MONTH)+1) + " " + c.get(Calendar.DATE) + "<END>";
+        if(Gname.equals("庫存情形")) {  //this if will not execute
+            if (realname.equals("0"))
+                cmd = "QUERY SH_NOW<END>";
+            else
+            cmd = "QUERY WH_NOW " + realname + " " + c.get(Calendar.YEAR) + " " + (c.get(Calendar.MONTH) + 1) + " " + c.get(Calendar.DATE) + "<END>";
+        }
+        else {
+            if (realname.equals("0"))
+                cmd = "QUERY SH_HISTORY" + " " + c.get(Calendar.YEAR) + " " + (c.get(Calendar.MONTH) + 1) + " " + c.get(Calendar.DATE) + "<END>";
+            else
+                cmd = "QUERY " + realgroup + " " + realname + " " + c.get(Calendar.YEAR) + " " + (c.get(Calendar.MONTH) + 1) + " " + c.get(Calendar.DATE) + "<END>";
+        }
 
         SocketHandler.writeToSocket(cmd);
         Log.d("Mylog", "command:" + cmd);
@@ -206,8 +220,13 @@ public class QueryActivity extends Activity {
                 }
             }
             scanner.close();
-            Calendar c = Calendar.getInstance();
-            message.setText("最後更新：" + c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH) + 1) + "-" + c.get(Calendar.DATE) + " " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND));
+            if(TL.getChildCount() == 0) {
+                message.setText("No Data");
+            }
+            else {
+                Calendar c = Calendar.getInstance();
+                message.setText("最後更新：" + c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH) + 1) + "-" + c.get(Calendar.DATE) + " " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND));
+            }
         }
 
     }

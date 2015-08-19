@@ -51,10 +51,12 @@ public class HistoryActivity extends Activity {
         t.setText("123");
         message = (TextView) findViewById(R.id.table_message);
         Intent intent = getIntent();
-        Qname = intent.getStringExtra("TestName");
+        Qname = intent.getStringExtra("HouseName");
         Gname = intent.getStringExtra("GroupClass");
         t.setText(Gname + " " + Qname);
         date_btn = (Button) findViewById(R.id.date_btn);
+        if(Qname.equals("線邊倉") && Gname.equals("庫存情形"))
+            date_btn.setVisibility(View.GONE);
         c = Calendar.getInstance();
         mymonth = c.get(Calendar.MONTH) + 1;
         myyear = c.get(Calendar.YEAR);
@@ -178,35 +180,38 @@ public class HistoryActivity extends Activity {
     private void QueryItems() {
         //Socket socket = SocketHandler.getSocket();
         result.clear();
-        if(Qname.equals("3號倉庫"))
+        if (Qname.equals("3號倉庫"))
             realname = "3";
-        else if(Qname.equals("5號倉庫"))
+        else if (Qname.equals("5號倉庫"))
             realname = "5";
-        else if(Qname.equals("6號倉庫"))
+        else if (Qname.equals("6號倉庫"))
             realname = "6";
-        else if(Qname.equals("線邊倉"))
+        else if (Qname.equals("線邊倉"))
             realname = "0";
         else
             realname = null;
 
-        if(Gname.equals("查詢歷史紀錄"))
+        if (Gname.equals("查詢歷史紀錄"))
             realgroup = "WH_HISTORY";
-        else if(Gname.equals("庫存情形"))
+        else if (Gname.equals("庫存情形"))
             realgroup = "WH_NOW";
         else
             realgroup = null;
 
         //example: QUERY WH_HISTORY 3 2015 07 01<END>
         //for(int day=1; day<31; day++) {
-            String cmd;
+        String cmd;
+        if (realname.equals("0"))
+            cmd = "QUERY SH_HISTORY " + myyear + " " + mymonth + " " + mydate + "<END>";
+        else
             cmd = "QUERY " + realgroup + " " + realname + " " + myyear + " " + mymonth + " " + mydate + "<END>";
-            SocketHandler.writeToSocket(cmd);
-            Log.d("Mylog", "QueryItems::command:" + cmd);
-            String output = SocketHandler.getOutput();
-            output = output.replaceAll("QUERY_REPLY\t", "");
-            output = output.replaceAll("<N>", "\n");
-            output = output.replaceAll("<END>", "");
-            result.add(output);
+        SocketHandler.writeToSocket(cmd);
+        Log.d("Mylog", "QueryItems::command:" + cmd);
+        String output = SocketHandler.getOutput();
+        output = output.replaceAll("QUERY_REPLY\t", "");
+        output = output.replaceAll("<N>", "\n");
+        output = output.replaceAll("<END>", "");
+        result.add(output);
         //}
         Log.d("Mylog", "Query done.");
     }
