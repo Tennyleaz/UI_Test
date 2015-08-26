@@ -17,6 +17,7 @@ import android.os.Message;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -112,8 +113,9 @@ public class Login extends ActionBarActivity {
     }
 
     private void InitServer() {
+        SocketHandler.closeSocket();
         socket = SocketHandler.initSocket(SERVERIP, SERVERPORT);
-        String init = "CONNECT MI_2<END>";
+        String init = "CONNECT\tMI_1<END>";
         SocketHandler.writeToSocket(init);
 
         //receive result
@@ -153,12 +155,12 @@ public class Login extends ActionBarActivity {
 
             String str_u = username.getText().toString();
             String str_p = MD5.getMD5EncryptedString(password.getText().toString());
-            String cmd = "LOGIN TABLET " + str_u + " " + str_p + "<END>";
+            String cmd = "LOGIN\tMASTER\t" + str_u + "\t" + str_p + "<END>";
             SocketHandler.writeToSocket(cmd);
+            //SocketHandler.getOutput();
             str1 = SocketHandler.getOutput();
-
-            //if (str1.contains("LOGIN_REPLY")) {
-            if (true) {
+            if (str1.contains("LOGIN_REPLY")) {
+            //if (true) {
                 Intent intent = new Intent(Login.this, MainMenu.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
@@ -185,4 +187,21 @@ public class Login extends ActionBarActivity {
             //message.setText(s);
         }
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d("Mylog", "back is pressed");
+            SocketHandler.closeSocket();
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    /*@Override
+    public void onStop() {
+        SocketHandler.closeSocket();
+        finish();
+        super.onStop();
+    }*/
 }

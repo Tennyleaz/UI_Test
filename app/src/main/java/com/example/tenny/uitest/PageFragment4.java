@@ -88,10 +88,9 @@ public class PageFragment4 extends Fragment {
         protected void onProgressUpdate(String... values) {
             TL.removeAllViews();
             TL2.removeAllViews();
-            String[] items = values[0].split("\t");
-            for(int i=0; i<items.length; i++) {
-                if(i > (items.length-4))
-                    break;
+            String[] items = values[0].split("\n");
+            for(int i=0; i<items.length; i+=2) {
+                String[] item = items[i].split("\t");
                 TableRow row = new TableRow(getActivity());
                 row.setBackgroundColor(Color.parseColor("#eeeeee"));
                 //set margin
@@ -102,12 +101,11 @@ public class PageFragment4 extends Fragment {
                 row.setLayoutParams(tableRowParams);
                 TL.addView(row);
 
-                //new switch button
                 TableRow.LayoutParams tlr = new TableRow.LayoutParams(32, 32);
                 tlr.setMargins(6, 6, 6, 6);
 
                 ImageView iv1 = new ImageView(getActivity());
-                if(items[i+1].equals("1"))
+                if(item[1].equals("1"))
                     iv1.setImageResource(R.drawable.green_circle);
                 else
                     iv1.setImageResource(R.drawable.red_cross);
@@ -115,20 +113,21 @@ public class PageFragment4 extends Fragment {
                 row.addView(iv1);
                 //
                 TextView tv = new TextView(getActivity());
-                tv.setText(items[i]);
+                tv.setText(item[0]);
                 tv.setTextSize(20);
-                i++;
                 row.addView(tv);
                 //repeat 2nd table column
-                i++;
                 //new switch button
+                if(i+1 > items.length)
+                    break;
+                item = items[i+1].split("\t");
                 TableRow row2 = new TableRow(getActivity());
                 row2.setBackgroundColor(Color.parseColor("#eeeeee"));
                 //set margin
                 row2.setLayoutParams(tableRowParams);
                 TL2.addView(row2);
                 ImageView iv2 = new ImageView(getActivity());
-                if(items[i+1].equals("1"))
+                if(item[1].equals("1"))
                     iv2.setImageResource(R.drawable.green_circle);
                 else
                     iv2.setImageResource(R.drawable.red_cross);
@@ -136,24 +135,24 @@ public class PageFragment4 extends Fragment {
                 row2.addView(iv2);
                 //
                 TextView tv2 = new TextView(getActivity());
-                tv2.setText(items[i]);
+                tv2.setText(item[0]);
                 tv2.setTextSize(20);
                 row2.addView(tv2);
-                i++;
             }
         }
     }
 
     private String UpdateStatus() {
         String result;
-        String cmd = "QUERY ONLINE_STATE<END>";
+        String cmd = "QUERY\tONLINE_STATE<END>";
         SocketHandler.writeToSocket(cmd);
         Log.d("Mylog", "command:" + cmd);
         result = SocketHandler.getOutput();
-        Log.d("Mylog", "query result:" + cmd);
+        //Log.d("Mylog", "query result:" + cmd);
         result = result.replaceAll("QUERY_REPLY\t", "");
         result = result.replaceAll("<N>", "\n");
         result = result.replaceAll("<END>", "");
+        //Log.d("Mylog", "final result:" + result);
         return result;
     }
 }

@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -19,11 +18,10 @@ import java.util.Calendar;
 import java.util.Scanner;
 
 /**
- * Created by Tenny on 2015/7/23.
- * //本日進出貨情況
- * WH_HISTORY & SH_HISTORY
+ * Created by Tenny on 2015/8/26.
+ * 本日庫存情形
  */
-public class QueryActivity extends Activity {
+public class QueryNowActivity extends Activity{
     private TextView t, message;
     private static TextView t1, t2;
     static private TableLayout TL;
@@ -47,7 +45,7 @@ public class QueryActivity extends Activity {
         Qname = intent.getStringExtra("HouseName");
         Gname = intent.getStringExtra("GroupClass");
         t.setText(Gname + " " + Qname);
-        pd = ProgressDialog.show(QueryActivity.this, "LOADING", "Fetching data, \nPlease wait...");
+        pd = ProgressDialog.show(QueryNowActivity.this, "LOADING", "Fetching data, \nPlease wait...");
         //開啟一個新線程，在新線程裡執行耗時的方法
         new Thread(new Runnable() {
             @Override
@@ -135,21 +133,21 @@ public class QueryActivity extends Activity {
             realgroup = "WH_HISTORY";
         else if(Gname.equals("本日庫存情形"))
             realgroup = "WH_NOW";
-        //else if(Gname.equals("查詢歷史紀錄"))
-        //    realgroup = "WH_HISTORY";
+            //else if(Gname.equals("查詢歷史紀錄"))
+            //    realgroup = "WH_HISTORY";
         else
             realgroup = null;
 
         Calendar c = Calendar.getInstance();
         //example: QUERY WH_HISTORY 3 2015 07 01<END>
         String cmd;
-        if(Gname.equals("本日庫存情形")) {  //this if will not execute
+        if(Gname.equals("本日庫存情形")) {  //this if will execute
             if (realname.equals("0"))
                 cmd = "QUERY\tSH_NOW<END>";
             else
-            cmd = "QUERY\tWH_NOW\t" + realname + "\t" + c.get(Calendar.YEAR) + "\t" + (c.get(Calendar.MONTH) + 1) + "\t" + c.get(Calendar.DATE) + "<END>";
+                cmd = "QUERY\tWH_NOW\t" + realname + "\t" + c.get(Calendar.YEAR) + "\t" + (c.get(Calendar.MONTH) + 1) + "\t" + c.get(Calendar.DATE) + "<END>";
         }
-        else {
+        else {  //this if will not execute
             if (realname.equals("0"))
                 cmd = "QUERY\tSH_HISTORY\t" + c.get(Calendar.YEAR) + "\t" + (c.get(Calendar.MONTH) + 1) + "\t" + c.get(Calendar.DATE) + "<END>";
             else
@@ -179,8 +177,8 @@ public class QueryActivity extends Activity {
                         SocketHandler.closeAndRestartSocket();
                         break;
                     }*/
-                //} catch (InterruptedException e) {
-                //    Log.e("Mylog", "Thread in QueryActivity::UpdateTask:" + e.toString());
+                    //} catch (InterruptedException e) {
+                    //    Log.e("Mylog", "Thread in QueryActivity::UpdateTask:" + e.toString());
                 } catch (Exception e) {
                     Log.e("Mylog", e.toString(), e);
                 }
@@ -193,11 +191,11 @@ public class QueryActivity extends Activity {
             Scanner scanner = new Scanner(values[0]);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if(line.contains("UPDATE_WH_NOW"))
+                if(line.contains("UPDATE_WH_HOSTORY"))
                     continue;
                 //message.setVisibility(View.GONE);
                 // process the line
-                TableRow row = new TableRow(QueryActivity.this);
+                TableRow row = new TableRow(QueryNowActivity.this);
                 row.setBackgroundColor(Color.parseColor("#bbbbbb"));//f3f3f3
                 //set margin
                 TableLayout.LayoutParams tableRowParams=
@@ -209,7 +207,7 @@ public class QueryActivity extends Activity {
                 //process each item
                 String[] items = line.split("\t");
                 for(int i=0; i<items.length; i++) {
-                    TextView tv = new TextView(QueryActivity.this);
+                    TextView tv = new TextView(QueryNowActivity.this);
                     tv.setMaxEms(8);
                     TableRow.LayoutParams tlr = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
                     tlr.setMargins(1, 0, 1, 0);
@@ -234,9 +232,9 @@ public class QueryActivity extends Activity {
     private String UpdateStatus() {
         String result;
         result = SocketHandler.getOutput();
+        Log.d("Mylog", "update status receive:" + result);
         if(result.contains("UPDATE_ONLINE"))
             return "";
-        Log.d("Mylog", "update status receive:" + result);
         result = result.replaceAll("UPDATE_WH_HISTORY\t" + realname + "\t", "");
         result = result.replaceAll("<N>", "\n");
         result = result.replaceAll("<END>", "");
@@ -253,3 +251,4 @@ public class QueryActivity extends Activity {
         }
     }
 }
+

@@ -33,11 +33,12 @@ public class PageFragment1 extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPage = getArguments().getInt(ARG_PAGE);
-        groups = new String[] {"本日進出貨情況", "庫存情形", "查詢歷史紀錄"};
+        groups = new String[] {"本日進出貨情況", "本日庫存情形", "查詢進出貨歷史紀錄", "查詢庫存歷史紀錄"};
         children = new String [][] {
                 {"3號倉庫", "5號倉庫", "6號倉庫", "線邊倉"},
                 {"3號倉庫", "5號倉庫", "6號倉庫", "線邊倉"},
-                {"3號倉庫", "5號倉庫", "6號倉庫", "線邊倉"}
+                {"3號倉庫", "5號倉庫", "6號倉庫", "線邊倉"},
+                {"3號倉庫", "5號倉庫", "6號倉庫"}
         };
     }
 
@@ -123,6 +124,12 @@ public class PageFragment1 extends Fragment {
                 public void onClick(View v) {
                     Log.d("Mylog", holder.text.getText().toString() + " clicked");
                     if(getGroup(groupPosition).toString().equals("本日進出貨情況")) {
+                        Intent intent = new Intent(getActivity(), QueryActivity.class);
+                        intent.putExtra("HouseName", holder.text.getText().toString());
+                        intent.putExtra("GroupClass", getGroup(groupPosition).toString());
+                        startActivity(intent);
+                    }
+                    else if(getGroup(groupPosition).toString().equals("本日庫存情形")) {
                         Intent intent = new Intent(getActivity(), QueryActivity.class);
                         intent.putExtra("HouseName", holder.text.getText().toString());
                         intent.putExtra("GroupClass", getGroup(groupPosition).toString());

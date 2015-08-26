@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
+//No use for now
 // In this case, the fragment displays simple text based on the page
 public class PageFragment3 extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";

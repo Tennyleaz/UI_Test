@@ -191,9 +191,9 @@ public class HistoryActivity extends Activity {
         else
             realname = null;
 
-        if (Gname.equals("查詢歷史紀錄"))
+        if (Gname.equals("查詢進出貨歷史紀錄"))
             realgroup = "WH_HISTORY";
-        else if (Gname.equals("庫存情形"))
+        else if (Gname.equals("查詢庫存歷史紀錄"))
             realgroup = "WH_NOW";
         else
             realgroup = null;
@@ -202,12 +202,14 @@ public class HistoryActivity extends Activity {
         //for(int day=1; day<31; day++) {
         String cmd;
         if (realname.equals("0"))
-            cmd = "QUERY SH_HISTORY " + myyear + " " + mymonth + " " + mydate + "<END>";
+            cmd = "QUERY\tSH_HISTORY\t" + myyear + "\t" + mymonth + "\t" + mydate + "<END>";
         else
-            cmd = "QUERY " + realgroup + " " + realname + " " + myyear + " " + mymonth + " " + mydate + "<END>";
+            cmd = "QUERY\t" + realgroup + "\t" + realname + "\t" + myyear + "\t" + mymonth + "\t" + mydate + "<END>";
         SocketHandler.writeToSocket(cmd);
         Log.d("Mylog", "QueryItems::command:" + cmd);
         String output = SocketHandler.getOutput();
+        while(output.contains("UPDATE_ONLINE"))
+            output = SocketHandler.getOutput();
         output = output.replaceAll("QUERY_REPLY\t", "");
         output = output.replaceAll("<N>", "\n");
         output = output.replaceAll("<END>", "");
@@ -304,6 +306,9 @@ public class HistoryActivity extends Activity {
         String result;
         result = SocketHandler.getOutput();
         if(result.length() <= 0)
+            return "";
+
+        if(result.contains("UPDATE_ONLINE"))
             return "";
 
         String[] items = result.split("\t");
