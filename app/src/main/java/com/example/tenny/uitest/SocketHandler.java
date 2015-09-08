@@ -82,7 +82,10 @@ public class SocketHandler {
                 System.out.println("Error getOutput: " + e.getMessage());
             }
             result = byteListToString(buffer);
-            return result;
+            if(result.contains("MSG"))
+                return getOutput();
+            else
+                return result;
         }
         else {
             Log.e("Mylog", "socket not created, cant get output!");

@@ -234,8 +234,8 @@ public class QueryActivity extends Activity {
     private String UpdateStatus() {
         String result;
         result = SocketHandler.getOutput();
-        if(result.contains("UPDATE_ONLINE"))
-            return "";
+        if(result != null && result.contains("UPDATE_ONLINE"))
+            return UpdateStatus();
         Log.d("Mylog", "update status receive:" + result);
         result = result.replaceAll("UPDATE_WH_HISTORY\t" + realname + "\t", "");
         result = result.replaceAll("<N>", "\n");
