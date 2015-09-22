@@ -54,7 +54,8 @@ public class PageFragment4 extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        task = new UpdateTask().execute();
+        task = new UpdateTask();
+        AsyncTaskTools.execute(task);
         Log.d("Mylog", "Fragment 4 start");
     }
 
@@ -69,9 +70,11 @@ public class PageFragment4 extends Fragment {
     private class UpdateTask extends AsyncTask<Void, String, String> {
         @Override
         protected String doInBackground(Void... v) {
-
+            Log.d("Mylog", "UpdateTask in fragment 4 doInBackground");
             boolean exit = false;
             while(!exit){
+                if(MainMenu.currentPage!=3)
+                    continue;
                 String s = UpdateStatus();
                 publishProgress(s);
                 try{
@@ -148,7 +151,7 @@ public class PageFragment4 extends Fragment {
         SocketHandler.writeToSocket(cmd);
         Log.d("Mylog", "command:" + cmd);
         result = SocketHandler.getOutput();
-        //Log.d("Mylog", "query result:" + cmd);
+        Log.d("Mylog", "query result:" + cmd);
         result = result.replaceAll("QUERY_REPLY\t", "");
         result = result.replaceAll("<N>", "\n");
         result = result.replaceAll("<END>", "");

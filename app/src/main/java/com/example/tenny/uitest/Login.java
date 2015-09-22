@@ -92,6 +92,24 @@ public class Login extends ActionBarActivity {
                 }
 
             }).start();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {  // 需要背景作的事
+                    try {
+                        for (int i = 0; i < 10; i++) {
+                            Thread.sleep(1000);
+                        }
+                        if(connected == 1)
+                            return;
+                        else {
+                            Log.e("Mylog", "1000ms timeout");
+                            ServerDownHandler.sendEmptyMessage(0);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
         }
     }
 
@@ -138,6 +156,24 @@ public class Login extends ActionBarActivity {
         @Override
         public void handleMessage(Message msg) {// handler接收到消息後就會執行此方法
             pd.dismiss();// 關閉ProgressDialog
+        }
+    };
+
+    private Handler ServerDownHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {// handler接收到消息後就會執行此方法
+            pd.dismiss();// 關閉ProgressDialog
+            AlertDialog.Builder dialog = new AlertDialog.Builder(Login.this);
+            dialog.setTitle("警告");
+            dialog.setMessage("伺服器無回應,\n程式即將關閉");
+            dialog.setPositiveButton("OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialoginterface, int i) {
+                            android.os.Process.killProcess(android.os.Process.myPid());
+                            System.exit(1);
+                        }
+                    });
+            dialog.show();
         }
     };
 
