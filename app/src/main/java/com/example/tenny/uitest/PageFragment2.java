@@ -2,6 +2,7 @@ package com.example.tenny.uitest;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -29,7 +31,7 @@ public class PageFragment2 extends Fragment {
     private TableRow TR[];
     private Button more_btn[];
     private String products[], swaps[];
-    private TextView updateTime, productNames[];
+    private TextView updateTime, productNames[], swapsLights[], swapsCommands[];
 
     public static PageFragment2 newInstance(int page) {
         Bundle args = new Bundle();
@@ -59,20 +61,65 @@ public class PageFragment2 extends Fragment {
         TR = new TableRow[13];
         more_btn = new Button[13];
         productNames = new TextView[13];
+        swapsLights = new TextView[21];
+        swapsCommands = new TextView[21];
         int j = TL.getChildCount();
         Log.d("Mylog", "TL.getChildCount()=" + j);
+        //int swap_count = 0;
         for(int i = 0; i < j; i++) {
             View v = TL.getChildAt(i);
             if (v instanceof TableRow) {
                 if(v.getId() == R.id.title_row)
                     continue;
                 TR[i-1] = (TableRow) v;
-                Log.d("Mylog", "i=" + i + " name=" + getResources().getResourceEntryName(TR[i-1].getId()));
+                //Log.d("Mylog", "i=" + i + " name=" + getResources().getResourceEntryName(TR[i-1].getId()));
                 productNames [i-1] = (TextView) TR[i-1].getChildAt(1);
                 more_btn[i-1] = (Button) TR[i-1].getChildAt(2);
-                Log.d("Mylog", "productNames=" + getResources().getResourceEntryName(productNames[i-1].getId()));
             }
         }
+        swapsLights[0] = (TextView) view.findViewById(R.id.light1_1);
+        swapsLights[1] = (TextView) view.findViewById(R.id.light1_2);
+        swapsLights[2] = (TextView) view.findViewById(R.id.light2_1);
+        swapsLights[3] = (TextView) view.findViewById(R.id.light2_2);
+        swapsLights[4] = (TextView) view.findViewById(R.id.light3_1);
+        swapsLights[5] = (TextView) view.findViewById(R.id.light3_2);
+        swapsLights[6] = (TextView) view.findViewById(R.id.light4_1);
+        swapsLights[7] = (TextView) view.findViewById(R.id.light4_2);
+        swapsLights[8] = (TextView) view.findViewById(R.id.light5_1);
+        swapsLights[9] = (TextView) view.findViewById(R.id.light5_2);
+        swapsLights[10] = (TextView) view.findViewById(R.id.light6_1);
+        swapsLights[11] = (TextView) view.findViewById(R.id.light6_2);
+        swapsLights[12] = (TextView) view.findViewById(R.id.light7_1);
+        swapsLights[13] = (TextView) view.findViewById(R.id.light7_2);
+        swapsLights[14] = (TextView) view.findViewById(R.id.light8_1);
+        swapsLights[15] = (TextView) view.findViewById(R.id.light8_2);
+        swapsLights[16] = (TextView) view.findViewById(R.id.light9);
+        swapsLights[17] = (TextView) view.findViewById(R.id.light10);
+        swapsLights[18] = (TextView) view.findViewById(R.id.light11);
+        swapsLights[19] = (TextView) view.findViewById(R.id.light12);
+        swapsLights[20] = (TextView) view.findViewById(R.id.light13);
+        swapsCommands[0] = (TextView) view.findViewById(R.id.cmd1_1);
+        swapsCommands[1] = (TextView) view.findViewById(R.id.cmd1_2);
+        swapsCommands[2] = (TextView) view.findViewById(R.id.cmd2_1);
+        swapsCommands[3] = (TextView) view.findViewById(R.id.cmd2_2);
+        swapsCommands[4] = (TextView) view.findViewById(R.id.cmd3_1);
+        swapsCommands[5] = (TextView) view.findViewById(R.id.cmd3_2);
+        swapsCommands[6] = (TextView) view.findViewById(R.id.cmd4_1);
+        swapsCommands[7] = (TextView) view.findViewById(R.id.cmd4_2);
+        swapsCommands[8] = (TextView) view.findViewById(R.id.cmd5_1);
+        swapsCommands[9] = (TextView) view.findViewById(R.id.cmd5_2);
+        swapsCommands[10] = (TextView) view.findViewById(R.id.cmd6_1);
+        swapsCommands[11] = (TextView) view.findViewById(R.id.cmd6_2);
+        swapsCommands[12] = (TextView) view.findViewById(R.id.cmd7_1);
+        swapsCommands[13] = (TextView) view.findViewById(R.id.cmd7_2);
+        swapsCommands[14] = (TextView) view.findViewById(R.id.cmd8_1);
+        swapsCommands[15] = (TextView) view.findViewById(R.id.cmd8_2);
+        swapsCommands[16] = (TextView) view.findViewById(R.id.cmd9);
+        swapsCommands[17] = (TextView) view.findViewById(R.id.cmd10);
+        swapsCommands[18] = (TextView) view.findViewById(R.id.cmd11);
+        swapsCommands[19] = (TextView) view.findViewById(R.id.cmd12);
+        swapsCommands[20] = (TextView) view.findViewById(R.id.cmd13);
+
         return view;
     }
 
@@ -130,6 +177,7 @@ public class PageFragment2 extends Fragment {
 
             for(int i=0; i<13; i++) {
                 String[] item = products[i].split("\t");
+
                 if(item.length >= 3) {
                     productNames[i].setText(item[2]);
                     more_btn[i].setOnClickListener(new Page2_OnClickListener(getActivity(), products[i]));
@@ -138,6 +186,18 @@ public class PageFragment2 extends Fragment {
                 else {
                     productNames[i].setText("No Data");
                     more_btn[i].setEnabled(false);
+                }
+            }
+            for(int i=0; i<21; i++) {
+                String[] item2 = swaps[i].split("\t");
+                if(item2.length >= 3) {
+                    if(item2[i].equals("0")) {
+                        swapsLights[i].setBackgroundColor(getResources().getColor(R.color.swaplight_grey));
+                        swapsCommands[i].setText("無換牌指令");
+                    } else {
+                        swapsLights[i].setBackgroundColor(getResources().getColor(R.color.swaplight_green));
+                        swapsCommands[i].setText("換牌");
+                    }
                 }
             }
         }
