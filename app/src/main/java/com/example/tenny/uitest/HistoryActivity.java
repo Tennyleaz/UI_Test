@@ -205,11 +205,17 @@ public class HistoryActivity extends Activity {
             cmd = "QUERY\tSH_HISTORY\t" + myyear + "\t" + mymonth + "\t" + mydate + "<END>";
         else
             cmd = "QUERY\t" + realgroup + "\t" + realname + "\t" + myyear + "\t" + mymonth + "\t" + mydate + "<END>";
+
+        if(!SocketHandler.isCreated)
+            SocketHandler.initSocket("140.113.167.14", 9000);
         SocketHandler.writeToSocket(cmd);
         Log.d("Mylog", "QueryItems::command:" + cmd);
         String output = SocketHandler.getOutput();
-        while(output.contains("UPDATE_ONLINE"))
+        while(output == null || !output.contains("QUERY_REPLY")) {
+            //return;
             output = SocketHandler.getOutput();
+            Log.d("Mylog", "get nothing, re-recieve");
+        }
         output = output.replaceAll("QUERY_REPLY\t", "");
         output = output.replaceAll("<N>", "\n");
         output = output.replaceAll("<END>", "");
@@ -305,7 +311,7 @@ public class HistoryActivity extends Activity {
     private String UpdateStatus() {   //realgroup: UPDATE_WH_NOW = 庫存情形    UPDATE_WH_HISTORY=進出貨
         String result;
         result = SocketHandler.getOutput();
-        if(result.length() <= 0)
+        if(result == null || result.length() <= 0)
             return "";
 
         if(result.contains("UPDATE_ONLINE"))

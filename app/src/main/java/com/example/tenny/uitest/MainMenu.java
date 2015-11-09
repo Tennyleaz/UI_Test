@@ -109,7 +109,7 @@ public class MainMenu extends FragmentActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK) {
-            Log.d("Mylog", "back is pressed");
+            Log.e("Mylog", "back is pressed");
             SocketHandler.closeSocket();
             /*try{
                 Thread.sleep(15000);
@@ -125,7 +125,7 @@ public class MainMenu extends FragmentActivity {
     public void onPause(){
         super.onPause();
         Log.d("Mylog", "Main Menu paused");
-        SocketHandler.closeSocket();
-        System.exit(0);
+        //SocketHandler.closeSocket();
+        //System.exit(0);
     }
 }

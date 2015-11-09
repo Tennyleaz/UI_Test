@@ -156,7 +156,7 @@ public class PageFragment2 extends Fragment {
                 String s2 = UpdateStatus("SWAP");
                 publishProgress(s, s2);
                 try{
-                    Thread.sleep(50000);
+                    Thread.sleep(15000);
                 } catch (InterruptedException e) {
                     Log.e("Mylog", "Thread in fragment2:" + e.toString());
                 }
@@ -189,14 +189,21 @@ public class PageFragment2 extends Fragment {
                 }
             }
             for(int i=0; i<21; i++) {
+                Log.d("Mylog", "swaps[" + i + "]=" + swaps[i]);
                 String[] item2 = swaps[i].split("\t");
                 if(item2.length >= 3) {
-                    if(item2[i].equals("0")) {
+                    if(item2[1].equals("0")) {
                         swapsLights[i].setBackgroundColor(getResources().getColor(R.color.swaplight_grey));
                         swapsCommands[i].setText("無換牌指令");
-                    } else {
+                    } else if(item2[1].equals("1")){
+                        swapsLights[i].setBackgroundColor(getResources().getColor(R.color.swaplight_red));
+                        swapsCommands[i].setText(item2[2]);
+                    } else if(item2[1].equals("2")){
+                        swapsLights[i].setBackgroundColor(getResources().getColor(R.color.swaplight_yellow));
+                        swapsCommands[i].setText(item2[2]);
+                    } else if(item2[1].equals("3")){
                         swapsLights[i].setBackgroundColor(getResources().getColor(R.color.swaplight_green));
-                        swapsCommands[i].setText("換牌");
+                        swapsCommands[i].setText(item2[2]);
                     }
                 }
             }
@@ -208,6 +215,9 @@ public class PageFragment2 extends Fragment {
         result = SocketHandler.getOutput();
         //Log.d("Mylog", "query result:" + cmd);
         if(result==null || result.length()==0)
+            return UpdateStatus(input);
+
+        if(!result.contains("QUERY_REPLY") )
             return UpdateStatus(input);
 
         String[] lines = result.split("<END>");

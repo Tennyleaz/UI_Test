@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class SocketHandler {
     private static Socket socket = null;
-    private static boolean isCreated = false;
+    public static boolean isCreated = false;
     private static InputStream in = null;
     private static OutputStream out = null;
     private static String ip;
@@ -154,7 +154,7 @@ public class SocketHandler {
     }
 
     public static synchronized void closeSocket() {
-        Log.d("Mylog", "Socket closed");
+        Log.e("Mylog", "Socket closed");
         if(isCreated) {
             try {
                 socket.close();
