@@ -57,7 +57,7 @@ public class MainMenu extends FragmentActivity {
     public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
         final int PAGE_COUNT = 4;
         //final int PAGE_COUNT = 2;
-        private String tabTitles[] = new String[] { "物料", "捲包", "加香", "設備狀態" };
+        private String tabTitles[] = new String[] { "物料", "捲包", "理切", "其他" };
         //private String tabTitles[] = new String[] { "物料", "設備狀態" };
 
         public SampleFragmentPagerAdapter(FragmentManager fm) {

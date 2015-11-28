@@ -127,7 +127,7 @@ public class HistoryActivity extends Activity {
 
     private void updateUI(){
         //display table
-        Log.d("Mylog", "updating UI...");
+        Log.d("Mylog", "History: updating UI...");
         TL.removeAllViews();
 
         for(String s:result) {
@@ -203,18 +203,22 @@ public class HistoryActivity extends Activity {
         String cmd;
         if (realname.equals("0"))
             cmd = "QUERY\tSH_HISTORY\t" + myyear + "\t" + mymonth + "\t" + mydate + "<END>";
-        else
+        else if(realgroup.equals("WH_NOW"))
             cmd = "QUERY\t" + realgroup + "\t" + realname + "\t" + myyear + "\t" + mymonth + "\t" + mydate + "<END>";
+        else
+            cmd = "QUERY\t" + realgroup + "\t" + realname + "\t" + myyear + "\t" + mymonth + "\t" + mydate + "\t" + myyear + "\t" + mymonth + "\t" + mydate +"<END>";
 
         if(!SocketHandler.isCreated)
             SocketHandler.initSocket("140.113.167.14", 9000);
         SocketHandler.writeToSocket(cmd);
         Log.d("Mylog", "QueryItems::command:" + cmd);
         String output = SocketHandler.getOutput();
-        while(output == null || !output.contains("QUERY_REPLY")) {
+        while(output == null || !output.contains("QUERY_REPLY") ) {
             //return;
+            if (output!=null && output.contains("QUERY_NULL"))
+                break;
             output = SocketHandler.getOutput();
-            Log.d("Mylog", "get nothing, re-recieve");
+            Log.d("Mylog", "history activity get nothing, re-recieve");
         }
         output = output.replaceAll("QUERY_REPLY\t", "");
         output = output.replaceAll("<N>", "\n");

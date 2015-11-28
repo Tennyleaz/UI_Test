@@ -151,9 +151,9 @@ public class QueryActivity extends Activity {
         }
         else {
             if (realname.equals("0"))
-                cmd = "QUERY\tSH_HISTORY\t" + c.get(Calendar.YEAR) + "\t" + (c.get(Calendar.MONTH) + 1) + "\t" + c.get(Calendar.DATE) + "<END>";
+                cmd = "QUERY\tSH_HISTORY\t" + c.get(Calendar.YEAR) + "\t" + (c.get(Calendar.MONTH) + 1) + "\t" + c.get(Calendar.DATE) +  "<END>";
             else
-                cmd = "QUERY\t" + realgroup + "\t" + realname + "\t" + c.get(Calendar.YEAR) + "\t" + (c.get(Calendar.MONTH) + 1) + "\t" + c.get(Calendar.DATE) + "<END>";
+                cmd = "QUERY\t" + realgroup + "\t" + realname + "\t" + c.get(Calendar.YEAR) + "\t" + (c.get(Calendar.MONTH) + 1) + "\t" + c.get(Calendar.DATE) + "\t" + c.get(Calendar.YEAR) + "\t" + (c.get(Calendar.MONTH) + 1) + "\t" + c.get(Calendar.DATE) + "<END>";
         }
 
         SocketHandler.writeToSocket(cmd);

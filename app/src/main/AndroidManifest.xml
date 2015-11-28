@@ -28,6 +28,22 @@
             android:name=".HistoryActivity"
             android:label="@string/app_name">
         </activity>
+        <activity
+            android:name=".RecipeActivity"
+            android:label="@string/app_name">
+        </activity>
+        <activity
+            android:name=".MachineStatus"
+            android:label="@string/app_name">
+        </activity>
+        <activity
+            android:name=".Values"
+            android:label="@string/app_name">
+        </activity>
+        <activity
+            android:name=".BoxNow"
+            android:label="@string/app_name">
+        </activity>
     </application>
 
 </manifest>

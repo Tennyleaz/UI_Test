@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This is the fragment  to be displayed for a section associated with a tab -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bootstrap="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/background"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/tvTitle"
+        android:text="Fragment #X"
+        android:textColor="#ff000000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="12dp" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvTitle"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/scrollView">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:layout_height="wrap_content">
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/table4"
+                android:layout_weight="1"
+                android:paddingBottom="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="2dp"
+                android:background="@color/background"
+                android:layout_marginTop="10dp">
+            </TableLayout>
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/table4_2"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:paddingBottom="15dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/background"
+                android:layout_marginTop="10dp">
+            </TableLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

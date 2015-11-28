@@ -189,29 +189,32 @@ public class Login extends ActionBarActivity {
             //Log.d("Mylog", "Connected!!");
             //publishProgress("Connected!!");
 
-            String str_u = username.getText().toString();
+            //String str_u = username.getText().toString();
+            String str_u = "1310568";
             String str_p = MD5.getMD5EncryptedString(password.getText().toString());
             String cmd = "LOGIN\tMASTER\t" + str_u + "\t" + str_p + "<END>";
             SocketHandler.writeToSocket(cmd);
             //SocketHandler.getOutput();
             str1 = SocketHandler.getOutput();
-            if (str1.contains("LOGIN_REPLY")) {
-            //if (true) {
-                Intent intent = new Intent(Login.this, MainMenu.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-                Bundle bundle = new Bundle();
-                bundle.putString("User", str_u);
-                bundle.putString("Password", str_p);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            } else {
-                Log.e("Mylog", "Login error:" + str1);
-                publishProgress("Wrong username or password.\nPlease try again.");
-                return  str1;
+            for(int i=0; i<5; i++) {
+                if (str1.contains("LOGIN_REPLY")) {
+                    //if (true) {
+                    Intent intent = new Intent(Login.this, MainMenu.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("User", str_u);
+                    bundle.putString("Password", str_p);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    return "Login Success.";
+                } else if(str1.contains("LOGIN_NULL")) {
+                    Log.e("Mylog", "Login error:" + str1);
+                    publishProgress("Wrong username or password.\nPlease try again.");
+                    return "Login Wrong.";
+                }
+                str1 = SocketHandler.getOutput();
             }
-            String s = "Login Success";
-            return s;
+            return "Please try arain.";
         }
         @Override
         protected void onProgressUpdate(String... values) {
@@ -219,8 +222,8 @@ public class Login extends ActionBarActivity {
         }
         @Override
         protected void onPostExecute(String s){
-            Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-            //message.setText(s);
+            if(s!= null && s.length()>0)
+                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
         }
     }
 

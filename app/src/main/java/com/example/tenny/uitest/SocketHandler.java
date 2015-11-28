@@ -41,7 +41,7 @@ public class SocketHandler {
             isCreated = true;
             in = socket.getInputStream();
             out = socket.getOutputStream();
-            socket.setSoTimeout(3000);
+            socket.setSoTimeout(3500);
         }
         catch (UnknownHostException e)
         {
