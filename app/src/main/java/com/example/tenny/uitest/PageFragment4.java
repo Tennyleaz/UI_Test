@@ -64,10 +64,10 @@ public class PageFragment4 extends Fragment {
                         intent = new Intent(getActivity(), BoxNow.class);
                         break;
                     case 3:
-                        intent = new Intent(getActivity(), MachineStatus.class);
+                        intent = new Intent(getActivity(), BoxHistory.class);
                         break;
                     case 4:
-                        intent = new Intent(getActivity(), MachineStatus.class);
+                        intent = new Intent(getActivity(), Workers.class);
                         break;
                 }
                 intent.putExtra("ActionName", item);

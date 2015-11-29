@@ -44,6 +44,14 @@
             android:name=".BoxNow"
             android:label="@string/app_name">
         </activity>
+        <activity
+            android:name=".BoxHistory"
+            android:label="@string/app_name">
+        </activity>
+        <activity
+            android:name=".Workers"
+            android:label="@string/app_name">
+        </activity>
     </application>
 
 </manifest>
