@@ -1,6 +1,7 @@
 package com.example.tenny.uitest;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import java.net.Socket;
 public class MachineStatus extends Activity {
     private TableLayout TL, TL2;
     private AsyncTask task = null;
+    private static ProgressDialog pd;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,7 @@ public class MachineStatus extends Activity {
         TL2 = (TableLayout) findViewById(R.id.table4_2);
         TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
         tvTitle.setText("設備狀態");
+        pd = ProgressDialog.show(MachineStatus.this, "LOADING", "Fetching data, \nPlease wait...");
     }
 
     @Override
@@ -56,6 +59,9 @@ public class MachineStatus extends Activity {
             while(!exit){
                 if(MainMenu.currentPage!=3)
                     continue;
+                String cmd = "QUERY\tONLINE_STATE<END>";
+                SocketHandler.writeToSocket(cmd);
+                Log.d("Mylog", "command:" + cmd);
                 String s = UpdateStatus();
                 publishProgress(s);
                 try{
@@ -70,11 +76,18 @@ public class MachineStatus extends Activity {
         }
         @Override
         protected void onProgressUpdate(String... values) {
+            Log.d("mylog", "values[0]=" + values[0]);
+            if(values[0] == null || values[0].length()==0)
+                return;
+            if(pd!=null)
+                pd.dismiss();
+            String[] items = values[0].split("\n");
             TL.removeAllViews();
             TL2.removeAllViews();
-            String[] items = values[0].split("\n");
             for(int i=0; i<items.length; i+=2) {
                 String[] item = items[i].split("\t");
+                if(item.length <2)
+                    continue;
                 TableRow row = new TableRow(MachineStatus.this);
                 row.setBackgroundColor(Color.parseColor("#eeeeee"));
                 //set margin
@@ -102,9 +115,11 @@ public class MachineStatus extends Activity {
                 row.addView(tv);
                 //repeat 2nd table column
                 //new switch button
-                if(i+1 > items.length)
+                if(i+1 >= items.length)
                     break;
                 item = items[i+1].split("\t");
+                if(item.length <2)
+                    continue;
                 TableRow row2 = new TableRow(MachineStatus.this);
                 row2.setBackgroundColor(Color.parseColor("#eeeeee"));
                 //set margin
@@ -128,15 +143,23 @@ public class MachineStatus extends Activity {
 
     private String UpdateStatus() {
         String result;
-        String cmd = "QUERY\tONLINE_STATE<END>";
-        SocketHandler.writeToSocket(cmd);
-        Log.d("Mylog", "command:" + cmd);
         result = SocketHandler.getOutput();
-        Log.d("Mylog", "query result:" + cmd);
-        result = result.replaceAll("QUERY_REPLY\t", "");
-        result = result.replaceAll("<N>", "\n");
-        result = result.replaceAll("<END>", "");
+        //Log.d("Mylog", "query result:" + cmd);
+        while(result == null || result.length() == 0)
+            result = SocketHandler.getOutput();;
+        String[] lines = result.split("<END>");
+        int length = lines.length;
+        for (String s : lines) {
+            if (s != null && s.contains("QUERY_REPLY\t")) {
+                s = s.replaceAll("QUERY_REPLY\t", "");
+                s = s.replaceAll("<N>", "\n");
+                s = s.replaceAll("<END>", "");
+                return  s;
+            } else if(s != null && s.contains("UPDATE_VALUE")){
+                return UpdateStatus();
+            }
+        }
         //Log.d("Mylog", "final result:" + result);
-        return result;
+        return null;
     }
 }

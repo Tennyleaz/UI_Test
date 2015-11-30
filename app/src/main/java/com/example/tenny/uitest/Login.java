@@ -36,7 +36,7 @@ public class Login extends ActionBarActivity {
     private EditText password;
     private Button login_btn;
     private static TextView message;
-    static final String SERVERIP = "140.113.167.14";
+    static final String SERVERIP = "192.168.1.250";//"140.113.167.14";
     static final int SERVERPORT = 9000; //8000= echo server, 9000=real server
     private String str1="0",str2="0";
     private static Socket socket;
@@ -138,14 +138,14 @@ public class Login extends ActionBarActivity {
 
         //receive result
         str2 = SocketHandler.getOutput();
-        Log.d("Mylog", str2);
-        if (str2.equals("CONNECT_OK<END>"))
+        //Log.d("Mylog", str2);
+        if (str2!=null && str2.equals("CONNECT_OK<END>"))
             connected = 1;
-        else if (str2.equals("CONNECT_WRONG<END>"))
+        else if (str2!=null && str2.equals("CONNECT_WRONG<END>"))
             connected = 2;
-        else if (str2.equals("CONNECT_EXIST<END>"))
+        else if (str2!=null && str2.equals("CONNECT_EXIST<END>"))
             connected = 3;
-        else if (str2.equals("CONNECT_REPEAT<END>"))
+        else if (str2!=null && str2.equals("CONNECT_REPEAT<END>"))
             connected = 4;
         else
             connected = 0;

@@ -167,7 +167,7 @@ public class Workers extends Activity {
         public void handleMessage(Message msg) {// handler接收到消息後就會執行此方法
             updateUI();
             Log.d("mylog", "handleMessage...");
-            pd.dismiss();// 關閉ProgressDialog
+
         }
     };
 
@@ -287,6 +287,7 @@ public class Workers extends Activity {
                 }
             } //end for
         }
+        pd.dismiss();// 關閉ProgressDialog
     }
 
     private class UpdateTask extends AsyncTask<Void, String, String> {

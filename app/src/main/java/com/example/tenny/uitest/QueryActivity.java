@@ -29,7 +29,7 @@ public class QueryActivity extends Activity {
     static private TableLayout TL;
     private String Qname;  //house name
     private String Gname;
-    private String realname;
+    private static String realname;
     static private String result, result2, result3;
     private static ProgressDialog pd;
     private AsyncTask task = null;
@@ -48,6 +48,7 @@ public class QueryActivity extends Activity {
         Gname = intent.getStringExtra("GroupClass");
         t.setText(Gname + " " + Qname);
         pd = ProgressDialog.show(QueryActivity.this, "LOADING", "Fetching data, \nPlease wait...");
+        Log.d("mylog", "Qname=" + Qname + "Gname=" + Gname);
         //開啟一個新線程，在新線程裡執行耗時的方法
         new Thread(new Runnable() {
             @Override
@@ -74,7 +75,7 @@ public class QueryActivity extends Activity {
         Scanner scanner = new Scanner(result);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if(line.contains("QUERY_NULL"))
+            if(line.contains("QUERY_NULL")  || line.contains("UPDATE_VALUE"))
                 continue;
             // process the line
             TableRow row = new TableRow(this);
@@ -120,13 +121,13 @@ public class QueryActivity extends Activity {
         //Socket socket = SocketHandler.getSocket();
         //String realname = "";
         String realgroup = "";
-        if(Qname.equals("3號倉庫"))
+        if(Qname.contains("3號倉庫"))
             realname = "3";
-        else if(Qname.equals("5號倉庫"))
+        else if(Qname.contains("5號倉庫"))
             realname = "5";
-        else if(Qname.equals("6號倉庫"))
+        else if(Qname.contains("6號倉庫"))
             realname = "6";
-        else if(Qname.equals("線邊倉"))
+        else if(Qname.contains("線邊倉"))
             realname = "0";
         else
             realname = null;
@@ -193,7 +194,7 @@ public class QueryActivity extends Activity {
             Scanner scanner = new Scanner(values[0]);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if(line.contains("UPDATE_WH_NOW"))
+                if(line.contains("UPDATE_WH_NOW")  || line.contains("UPDATE_VALUE"))
                     continue;
                 //message.setVisibility(View.GONE);
                 // process the line
@@ -234,10 +235,11 @@ public class QueryActivity extends Activity {
     private String UpdateStatus() {
         String result;
         result = SocketHandler.getOutput();
-        if(result != null && result.contains("UPDATE_ONLINE"))
+        if(result != null && (result.contains("UPDATE_ONLINE") || result.contains("UPDATE_VALUE")))
             return UpdateStatus();
-        Log.d("Mylog", "update status receive:" + result);
+        Log.d("Mylog", "QueryActivity update status " + realname + " receive:" + result);
         result = result.replaceAll("UPDATE_WH_HISTORY\t" + realname + "\t", "");
+        result = result.replaceAll("QUERY_REPLY\t", "");
         result = result.replaceAll("<N>", "\n");
         result = result.replaceAll("<END>", "");
         return result;

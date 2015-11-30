@@ -74,7 +74,7 @@ public class SocketHandler {
                     String s= new String(readbyte, 0, i);
                     readbyte = null;
                     readbyte = new byte[1024];
-                    Log.d("Mylog", "i=" + i + ", s="+s);
+                    //Log.d("Mylog", "i=" + i + ", s="+s);
                     if(s.contains("<END>"))
                         break;
                 }

@@ -124,8 +124,8 @@ public class PageFragment2 extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         task = new UpdateTask();
         AsyncTaskTools.execute(task);
         Log.d("Mylog", "Fragment 2 start");

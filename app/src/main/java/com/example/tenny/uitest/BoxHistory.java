@@ -107,13 +107,31 @@ public class BoxHistory extends Activity {
         cmd = "QUERY\tBOX_HISTORY\t" +myyear + "\t" + mymonth + "\t" + mydate + "\t" + myyear + "\t" + mymonth + "\t" + mydate + "<END>";
 
         SocketHandler.writeToSocket(cmd);
-        result = SocketHandler.getOutput();
         Log.d("Mylog", "command:" + cmd);
-        Log.d("Mylog", "result:" + result);
-        while(result==null || !(result.contains("QUERY_REPLY") || result.contains("QUERY_NULL")) ) {
-            Log.d("Mylog", "get nothing, redo...");
+
+        result = null;
+        while(result == null || result.length() == 0) {
             result = SocketHandler.getOutput();
+            if(result == null || result.length() == 0)
+                continue;
+            String[] lines = result.split("<END>");
+            boolean ok = false;
+            for (String s : lines) {
+                if (s != null && s.contains("QUERY_REPLY\t")) {
+                    result = s;
+                    ok = true;
+                    break;
+                } else if(s != null && s.contains("QUERY_NULL")){
+                    ok = true;
+                    result = s;
+                    break;
+                }
+            }
+            if(!ok)
+                result = null;
         }
+
+        Log.d("Mylog", "result:" + result);
         result = result.replaceAll("QUERY_REPLY\t", "");
         result = result.replaceAll("<N>", "\n");
         result = result.replaceAll("<END>", "");
@@ -134,7 +152,7 @@ public class BoxHistory extends Activity {
         Scanner scanner = new Scanner(result);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if(line.contains("QUERY_NULL"))
+            if(line.contains("QUERY_NULL") || line.contains("UPDATE_VALUE"))
                 continue;
             // process the line
             TableRow row = new TableRow(this);
@@ -191,7 +209,7 @@ public class BoxHistory extends Activity {
             Scanner scanner = new Scanner(values[0]);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if(line.contains("QUERY_NULL"))
+                if(line.contains("QUERY_NULL") || line.contains("UPDATE_VALUE"))
                     continue;
                 //message.setVisibility(View.GONE);
                 // process the line
@@ -232,7 +250,7 @@ public class BoxHistory extends Activity {
     private String UpdateStatus() {
         String result;
         result = SocketHandler.getOutput();
-        if(result != null && result.contains("UPDATE_ONLINE"))
+        if(result != null && (result.contains("UPDATE_ONLINE") || result.contains("UPDATE_VALUE")))
             return UpdateStatus();
         Log.d("Mylog", "update status receive:" + result);
         //result = result.replaceAll("UPDATE_WH_HISTORY\t" + realname + "\t", "");

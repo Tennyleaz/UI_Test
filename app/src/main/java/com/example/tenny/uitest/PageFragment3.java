@@ -58,7 +58,7 @@ public class PageFragment3 extends Fragment {
             public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
                 ListView listView = (ListView) adapter;
                 String item = listView.getItemAtPosition(position).toString();
-                Toast.makeText(getActivity(), "clicked:" + item, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "clicked:" + item, Toast.LENGTH_SHORT).show();
                 //if(position < 3) {
                     Intent intent = new Intent(getActivity(), RecipeActivity.class);
                     intent.putExtra("ActionName", item);
