@@ -75,7 +75,7 @@ public class QueryActivity extends Activity {
         Scanner scanner = new Scanner(result);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if(line.contains("QUERY_NULL")  || line.contains("UPDATE_VALUE"))
+            if(line.contains("QUERY_NULL")  || line.contains("UPDATE_VALUE") || line.contains("UPDATE_BOX"))
                 continue;
             // process the line
             TableRow row = new TableRow(this);
@@ -194,7 +194,7 @@ public class QueryActivity extends Activity {
             Scanner scanner = new Scanner(values[0]);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if(line.contains("UPDATE_WH_NOW")  || line.contains("UPDATE_VALUE"))
+                if(line.contains("UPDATE_WH_NOW")  || line.contains("UPDATE_VALUE") || line.contains("UPDATE_BOX"))
                     continue;
                 //message.setVisibility(View.GONE);
                 // process the line
@@ -235,7 +235,7 @@ public class QueryActivity extends Activity {
     private String UpdateStatus() {
         String result;
         result = SocketHandler.getOutput();
-        if(result != null && (result.contains("UPDATE_ONLINE") || result.contains("UPDATE_VALUE")))
+        if(result != null && (result.contains("UPDATE_ONLINE") || result.contains("UPDATE_VALUE") || result.contains("UPDATE_BOX")))
             return UpdateStatus();
         Log.d("Mylog", "QueryActivity update status " + realname + " receive:" + result);
         result = result.replaceAll("UPDATE_WH_HISTORY\t" + realname + "\t", "");

@@ -153,7 +153,7 @@ public class RecipeActivity extends Activity {
         Scanner scanner = new Scanner(result);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if(line.contains("QUERY_NULL") || line.contains("UPDATE_VALUE"))
+            if(line.contains("QUERY_NULL") || line.contains("UPDATE_VALUE") || line.contains("UPDATE_BOX"))
                 continue;
             // process the line
             TableRow row = new TableRow(this);
@@ -260,7 +260,7 @@ public class RecipeActivity extends Activity {
             Scanner scanner = new Scanner(values[0]);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if(line.contains("QUERY_NULL") || line.contains("UPDATE_VALUE"))
+                if(line.contains("QUERY_NULL") || line.contains("UPDATE_VALUE") || line.contains("UPDATE_BOX"))
                     continue;
                 //message.setVisibility(View.GONE);
                 // process the line
@@ -301,7 +301,7 @@ public class RecipeActivity extends Activity {
     private String UpdateStatus() {
         String result;
         result = SocketHandler.getOutput();
-        if(result != null && result.contains("UPDATE_ONLINE"))
+        if(result != null && (result.contains("UPDATE_ONLINE") || result.contains("UPDATE_BOX") || result.contains("UPDATE_VALUE")))
             return UpdateStatus();
         Log.d("Mylog", "update status receive:" + result);
         //result = result.replaceAll("UPDATE_WH_HISTORY\t" + realname + "\t", "");

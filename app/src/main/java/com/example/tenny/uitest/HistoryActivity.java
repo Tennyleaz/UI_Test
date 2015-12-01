@@ -135,7 +135,7 @@ public class HistoryActivity extends Activity {
             Scanner scanner = new Scanner(s);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if(line.contains("QUERY_NULL")  || line.contains("UPDATE_VALUE"))
+                if(line.contains("QUERY_NULL")  || line.contains("UPDATE_VALUE") || line.contains("UPDATE_BOX"))
                     continue;
                 // process the line
                 TableRow row = new TableRow(this);
@@ -328,7 +328,7 @@ public class HistoryActivity extends Activity {
             }
         }
         if(!ok) return "";
-        if(result.contains("UPDATE_ONLINE")  || result.contains("UPDATE_VALUE"))
+        if(result.contains("UPDATE_ONLINE")  || result.contains("UPDATE_VALUE") || result.contains("UPDATE_BOX"))
             return "";
 
         String[] items = result.split("\t");

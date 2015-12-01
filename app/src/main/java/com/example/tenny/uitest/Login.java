@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -39,9 +40,11 @@ public class Login extends ActionBarActivity {
     static final String SERVERIP = "192.168.1.250";//"140.113.167.14";
     static final int SERVERPORT = 9000; //8000= echo server, 9000=real server
     private String str1="0",str2="0";
-    private static Socket socket;
     private static ProgressDialog pd;
     private static short connected;
+    private static int rebootCount;
+    private AsyncTask task;
+    private static String BoardID = "MI_1";
     //private Thread t;
 
     @Override
@@ -63,6 +66,10 @@ public class Login extends ActionBarActivity {
         password = (EditText) findViewById(R.id.password);
         login_btn = (Button) findViewById(R.id.login_btn);
         login_btn.setOnClickListener(onclick);
+
+        final SharedPreferences settings = getApplicationContext().getSharedPreferences("EC510", 0);
+        BoardID = "MI_" + settings.getString("board_ID", "1");
+        Log.d("mylog", "BOARD_ID=" + BoardID);
 
         if(!isNetworkConnected()){  //close when not connected
             AlertDialog.Builder dialog = new AlertDialog.Builder(Login.this);
@@ -117,7 +124,7 @@ public class Login extends ActionBarActivity {
         @Override
         public void onClick(View v) {
             if(connected == 1)
-                new LoginTask().execute(username.getText().toString(), password.getText().toString());
+                task = new LoginTask().execute(username.getText().toString(), password.getText().toString());
             else
                 message.setText("Error:" + connected + " " + str2);
         }
@@ -132,8 +139,8 @@ public class Login extends ActionBarActivity {
 
     private void InitServer() {
         SocketHandler.closeSocket();
-        socket = SocketHandler.initSocket(SERVERIP, SERVERPORT);
-        String init = "CONNECT\tMI_1<END>";
+        SocketHandler.initSocket(SERVERIP, SERVERPORT);
+        String init = "CONNECT\t" + BoardID + "<END>";
         SocketHandler.writeToSocket(init);
 
         //receive result
@@ -189,8 +196,8 @@ public class Login extends ActionBarActivity {
             //Log.d("Mylog", "Connected!!");
             //publishProgress("Connected!!");
 
-            //String str_u = username.getText().toString();
-            String str_u = "1310568";
+            String str_u = username.getText().toString();
+            //String str_u = "1310568";
             String str_p = MD5.getMD5EncryptedString(password.getText().toString());
             String cmd = "LOGIN\tMASTER\t" + str_u + "\t" + str_p + "<END>";
             SocketHandler.writeToSocket(cmd);
@@ -233,6 +240,27 @@ public class Login extends ActionBarActivity {
             Log.d("Mylog", "back is pressed");
             SocketHandler.closeSocket();
             finish();
+        }
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            rebootCount++;
+            if(rebootCount > 5) {
+                if (task != null)
+                    task.cancel(true);
+                SocketHandler.closeSocket();
+                if (pd != null)
+                    pd.dismiss();
+                Thread[] threads = new Thread[Thread.activeCount()];  //close all running threads
+                Thread.enumerate(threads);
+                for (Thread t : threads) {
+                    t.interrupt();
+                }
+                Log.d("mylog", "KEYCODE_VOLUME_UP key long press!");
+                Intent intent = new Intent(Login.this, ChangeID.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+            return true;
         }
         return super.onKeyDown(keyCode, event);
     }

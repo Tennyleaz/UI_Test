@@ -72,7 +72,7 @@ public class QueryNowActivity extends Activity{
         Scanner scanner = new Scanner(result);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if(line.contains("QUERY_NULL"))
+            if(line.contains("QUERY_NULL") || line.contains("UPDATE_BOX") || line.contains("UPDATE_VALUE"))
                 continue;
             // process the line
             TableRow row = new TableRow(this);
@@ -191,7 +191,7 @@ public class QueryNowActivity extends Activity{
             Scanner scanner = new Scanner(values[0]);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if(line.contains("UPDATE_WH_HOSTORY"))
+                if(line.contains("UPDATE_WH_HOSTORY") || line.contains("UPDATE_BOX") || line.contains("UPDATE_VALUE"))
                     continue;
                 //message.setVisibility(View.GONE);
                 // process the line
