@@ -246,9 +246,10 @@ public class Login extends ActionBarActivity {
             if(rebootCount > 5) {
                 if (task != null)
                     task.cancel(true);
-                SocketHandler.closeSocket();
+                //SocketHandler.closeSocket();
                 if (pd != null)
                     pd.dismiss();
+                Log.d("mylog", "count=5");
                 Thread[] threads = new Thread[Thread.activeCount()];  //close all running threads
                 Thread.enumerate(threads);
                 for (Thread t : threads) {
