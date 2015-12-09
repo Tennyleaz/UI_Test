@@ -1,6 +1,7 @@
 package com.example.tenny.uitest;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -103,5 +104,12 @@ public class BoxNow extends Activity {
         super.onPause();
         if(task!=null)
             task.cancel(true);
+    }
+
+    public void onBackPressed(){
+        Log.d("mylog", "back is pressed");
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        finish();
     }
 }

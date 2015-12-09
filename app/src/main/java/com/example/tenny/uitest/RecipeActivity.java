@@ -123,13 +123,18 @@ public class RecipeActivity extends Activity {
                 cmd = "QUERY\tSWAP_HISTORY\t" +myyear + "\t" + mymonth + "\t" + mydate + "\t" + myyear + "\t" + mymonth + "\t" + mydate + "<END>";
                 break;
 
-      }
-
-        SocketHandler.writeToSocket(cmd);
-        result = SocketHandler.getOutput();
+        }
         Log.d("Mylog", "command:" + cmd);
+        Log.d("mylog", "before queryitems write to socket");
+        SocketHandler.writeToSocket(cmd);
+        Log.d("mylog", "after queryitems write to socket, before get output");
+        result = SocketHandler.getOutput();
         Log.d("Mylog", "result:" + result);
-        while(result==null || !(result.contains("QUERY_REPLY") || result.contains("QUERY_NULL")) ) {
+        /*while(result==null ) {
+            Log.d("Mylog", "get nothing, redo...");
+            result = SocketHandler.getOutput();
+        }*/
+        while(result!=null && !(result.contains("QUERY_REPLY") || result.contains("QUERY_NULL")) ) {
             Log.d("Mylog", "get nothing, redo...");
             result = SocketHandler.getOutput();
         }
@@ -149,20 +154,73 @@ public class RecipeActivity extends Activity {
     };
 
     private void update(){
+        TableRow row0 = new TableRow(this);
+        TableLayout.LayoutParams tableRowParams=
+                new TableLayout.LayoutParams
+                        (TableLayout.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams tlr = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+        tlr.setMargins(1, 0, 1, 0);
+        tableRowParams.setMargins(1, 1, 1, 1);
+        TextView tv1, tv2, tv3, tv4, tv5, tv6;
+        tv1 = new TextView(this);
+        tv2 = new TextView(this);
+        tv3 = new TextView(this);
+        tv4 = new TextView(this);
+        tv5 = new TextView(this);
+        if(activityName.equals("配料歷史")) {
+            TL.removeAllViews();
+            tv1.setText("時間");
+            tv2.setText("品牌號碼");
+            tv3.setText("品牌名稱");
+            tv4.setText("流水編號");
+            tv5.setText("員工");
+            row0.addView(tv1);
+            row0.addView(tv2);
+            row0.addView(tv3);
+            row0.addView(tv4);
+            row0.addView(tv5);
+            TL.addView(row0);
+        } else if(activityName.equals("換牌歷史")) {
+            TL.removeAllViews();
+            tv1.setText("時間");
+            tv2.setText("品牌名稱");
+            tv3.setText("換成品牌");
+            tv4.setText("位置");
+            tv5.setText("員工");
+            row0.addView(tv1);
+            row0.addView(tv2);
+            row0.addView(tv3);
+            row0.addView(tv4);
+            row0.addView(tv5);
+            TL.addView(row0);
+        } else if(activityName.equals("加香歷史")) {
+            TL.removeAllViews();
+            tv1.setText("時間");
+            tv2.setText("配方名稱");
+            tv3.setText("配方編號");
+            tv5.setText("員工");
+            row0.addView(tv1);
+            row0.addView(tv2);
+            row0.addView(tv3);
+            row0.addView(tv5);
+            TL.addView(row0);
+        }
+
         //display table
         Scanner scanner = new Scanner(result);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if(line.contains("QUERY_NULL") || line.contains("UPDATE_VALUE") || line.contains("UPDATE_BOX"))
+            Log.d("mylog", "line=" + line);
+            //if(line.contains("QUERY_NULL") || line.contains("UPDATE_VALUE") || line.contains("UPDATE_BOX") || line.contains("BOX_RECENT") || line.contains("UPDATE_ONLINE") || line.contains("SCHEDULE"))
+            //    continue;
+            //if(!(line.contains("QUERY_REPLY") || line.contains("QUERY_NULL")))
+            //    continue;
+            if(line.contains("QUERY_NULL"))
                 continue;
             // process the line
             TableRow row = new TableRow(this);
             row.setBackgroundColor(Color.parseColor("#bbbbbb"));//f3f3f3
             //set margin
-            TableLayout.LayoutParams tableRowParams=
-                    new TableLayout.LayoutParams
-                            (TableLayout.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT);
-            tableRowParams.setMargins(1, 1, 1, 1);
             row.setLayoutParams(tableRowParams);
             TL.addView(row);
             //process each item
@@ -170,8 +228,6 @@ public class RecipeActivity extends Activity {
             for(int i=0; i<items.length; i++) {
                 if(i==items.length-1 && activityName.equals("配料歷史"))
                     break;
-                TableRow.LayoutParams tlr = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-                tlr.setMargins(1, 0, 1, 0);
                 TextView tv = new TextView(this);
                 if(i==0 && activityName.equals("加香情形")) {
                     tv.setText("加香槽 " + items[i]);
@@ -195,27 +251,27 @@ public class RecipeActivity extends Activity {
                     tv.setTextSize(18);
                     row.addView(tv);
 
-                    TextView tv2 = new TextView(this);
-                    tv2.setMaxEms(12);
-                    tv2.setLayoutParams(tlr);
-                    tv2.setBackgroundColor(Color.parseColor("#f3f3f3"));
-                    tv2.setText(items[3]);
-                    tv2.setTextSize(18);
+                    TextView tvb = new TextView(this);
+                    tvb.setMaxEms(12);
+                    tvb.setLayoutParams(tlr);
+                    tvb.setBackgroundColor(Color.parseColor("#f3f3f3"));
+                    tvb.setText(items[3]);
+                    tvb.setTextSize(18);
                     switch (items[2]) {
                         case "0":
-                            tv2.setTextColor(getResources().getColor(R.color.swaplight_grey));
+                            tvb.setTextColor(getResources().getColor(R.color.swaplight_grey));
                             break;
                         case "1":
-                            tv2.setTextColor(getResources().getColor(R.color.swaplight_red));
+                            tvb.setTextColor(getResources().getColor(R.color.swaplight_red));
                             break;
                         case "2":
-                            tv2.setTextColor(getResources().getColor(R.color.swaplight_yellow_text));
+                            tvb.setTextColor(getResources().getColor(R.color.swaplight_yellow_text));
                             break;
                         case "3":
-                            tv2.setTextColor(getResources().getColor(R.color.swaplight_green));
+                            tvb.setTextColor(getResources().getColor(R.color.swaplight_green));
                             break;
                     }
-                    row.addView(tv2);
+                    row.addView(tvb);
                     break;
                 } else {
                     tv.setText(items[i]);
@@ -260,7 +316,10 @@ public class RecipeActivity extends Activity {
             Scanner scanner = new Scanner(values[0]);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if(line.contains("QUERY_NULL") || line.contains("UPDATE_VALUE") || line.contains("UPDATE_BOX"))
+                //if(line.contains("QUERY_NULL") || line.contains("UPDATE_VALUE") || line.contains("UPDATE_BOX") || line.contains("BOX_RECENT") || line.contains("UPDATE_ONLINE") || line.contains("SCHEDULE"))
+                if(!(line.contains("QUERY_REPLY") || line.contains("QUERY_NULL")))
+                    continue;
+                if(line.contains("QUERY_NULL"))
                     continue;
                 //message.setVisibility(View.GONE);
                 // process the line
@@ -301,7 +360,7 @@ public class RecipeActivity extends Activity {
     private String UpdateStatus() {
         String result;
         result = SocketHandler.getOutput();
-        if(result != null && (result.contains("UPDATE_ONLINE") || result.contains("UPDATE_BOX") || result.contains("UPDATE_VALUE")))
+        if(result != null && !(result.contains("QUERY_REPLY") || result.contains("QUERY_NULL")) )
             return UpdateStatus();
         Log.d("Mylog", "update status receive:" + result);
         //result = result.replaceAll("UPDATE_WH_HISTORY\t" + realname + "\t", "");
@@ -319,5 +378,15 @@ public class RecipeActivity extends Activity {
             //SocketHandler.closeAndRestartSocket();
             task.cancel(true);
         }
+    }
+
+    public void onBackPressed(){
+        Log.d("mylog", "back is pressed");
+        if(task!=null) {
+            task.cancel(true);
+        }
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        finish();
     }
 }

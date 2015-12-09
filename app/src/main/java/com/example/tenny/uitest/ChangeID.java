@@ -31,7 +31,7 @@ public class ChangeID extends Activity {
         btn = (Button) findViewById(R.id.button);
         Log.e("mylog", "change id start");
 
-        String[] idArray = {"1", "2", "3", "4", "5"};
+        String[] idArray = {"1", "2", "3", "4"};
         idAdapter = new ArrayAdapter<String>(ChangeID.this, android.R.layout.simple_spinner_dropdown_item, idArray);
         idSelect.setAdapter(idAdapter);
         // Get from the SharedPreferences

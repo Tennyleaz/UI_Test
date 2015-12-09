@@ -75,7 +75,7 @@ public class QueryActivity extends Activity {
         Scanner scanner = new Scanner(result);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if(line.contains("QUERY_NULL")  || line.contains("UPDATE_VALUE") || line.contains("UPDATE_BOX"))
+            if(line.contains("QUERY_NULL"))
                 continue;
             // process the line
             TableRow row = new TableRow(this);
@@ -160,6 +160,10 @@ public class QueryActivity extends Activity {
         SocketHandler.writeToSocket(cmd);
         Log.d("Mylog", "command:" + cmd);
         result = SocketHandler.getOutput();
+        while(result!=null && !(result.contains("QUERY_REPLY") || result.contains("QUERY_NULL")) ) {
+            Log.d("Mylog", "get nothing, redo...");
+            result = SocketHandler.getOutput();
+        }
         result = result.replaceAll("QUERY_REPLY\t", "");
         result = result.replaceAll("<N>", "\n");
         result = result.replaceAll("<END>", "");
@@ -194,7 +198,9 @@ public class QueryActivity extends Activity {
             Scanner scanner = new Scanner(values[0]);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if(line.contains("UPDATE_WH_NOW")  || line.contains("UPDATE_VALUE") || line.contains("UPDATE_BOX"))
+                if(!(line.contains("QUERY_REPLY") || line.contains("QUERY_NULL")))
+                    continue;
+                if(line.contains("QUERY_NULL"))
                     continue;
                 //message.setVisibility(View.GONE);
                 // process the line
@@ -235,7 +241,7 @@ public class QueryActivity extends Activity {
     private String UpdateStatus() {
         String result;
         result = SocketHandler.getOutput();
-        if(result != null && (result.contains("UPDATE_ONLINE") || result.contains("UPDATE_VALUE") || result.contains("UPDATE_BOX")))
+        if(result != null && !(result.contains("QUERY_REPLY") || result.contains("QUERY_NULL")) )
             return UpdateStatus();
         Log.d("Mylog", "QueryActivity update status " + realname + " receive:" + result);
         result = result.replaceAll("UPDATE_WH_HISTORY\t" + realname + "\t", "");
@@ -253,5 +259,12 @@ public class QueryActivity extends Activity {
             //SocketHandler.closeAndRestartSocket();
             task.cancel(true);
         }
+    }
+
+    public void onBackPressed(){
+        Log.d("mylog", "back is pressed");
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        finish();
     }
 }

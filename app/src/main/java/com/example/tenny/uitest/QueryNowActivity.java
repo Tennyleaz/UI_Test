@@ -72,7 +72,7 @@ public class QueryNowActivity extends Activity{
         Scanner scanner = new Scanner(result);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if(line.contains("QUERY_NULL") || line.contains("UPDATE_BOX") || line.contains("UPDATE_VALUE"))
+            if(line.contains("QUERY_NULL") )
                 continue;
             // process the line
             TableRow row = new TableRow(this);
@@ -157,6 +157,10 @@ public class QueryNowActivity extends Activity{
         SocketHandler.writeToSocket(cmd);
         Log.d("Mylog", "command:" + cmd);
         result = SocketHandler.getOutput();
+        while(result!=null && !(result.contains("QUERY_REPLY") || result.contains("QUERY_NULL")) ) {
+            Log.d("Mylog", "get nothing, redo...");
+            result = SocketHandler.getOutput();
+        }
         result = result.replaceAll("QUERY_REPLY\t", "");
         result = result.replaceAll("<N>", "\n");
         result = result.replaceAll("<END>", "");
@@ -191,7 +195,9 @@ public class QueryNowActivity extends Activity{
             Scanner scanner = new Scanner(values[0]);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if(line.contains("UPDATE_WH_HOSTORY") || line.contains("UPDATE_BOX") || line.contains("UPDATE_VALUE"))
+                if(!(line.contains("QUERY_REPLY") || line.contains("QUERY_NULL")))
+                    continue;
+                if(line.contains("QUERY_NULL") || line.contains("UPDATE_WH_HOSTORY"))
                     continue;
                 //message.setVisibility(View.GONE);
                 // process the line
@@ -233,8 +239,11 @@ public class QueryNowActivity extends Activity{
         String result;
         result = SocketHandler.getOutput();
         Log.d("Mylog", "update status receive:" + result);
-        if(result.contains("UPDATE_ONLINE"))
-            return "";
+        while(result!=null && !(result.contains("QUERY_REPLY") || result.contains("QUERY_NULL")) ) {
+            Log.d("Mylog", "get nothing, redo...");
+            result = SocketHandler.getOutput();
+        }
+        if(result==null) return "";
         result = result.replaceAll("UPDATE_WH_HISTORY\t" + realname + "\t", "");
         result = result.replaceAll("<N>", "\n");
         result = result.replaceAll("<END>", "");

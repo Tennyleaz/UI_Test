@@ -135,7 +135,7 @@ public class HistoryActivity extends Activity {
             Scanner scanner = new Scanner(s);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                if(line.contains("QUERY_NULL")  || line.contains("UPDATE_VALUE") || line.contains("UPDATE_BOX"))
+                if(line.contains("QUERY_NULL"))
                     continue;
                 // process the line
                 TableRow row = new TableRow(this);
@@ -208,17 +208,12 @@ public class HistoryActivity extends Activity {
         else
             cmd = "QUERY\t" + realgroup + "\t" + realname + "\t" + myyear + "\t" + mymonth + "\t" + mydate + "\t" + myyear + "\t" + mymonth + "\t" + mydate +"<END>";
 
-        if(!SocketHandler.isCreated)
-            SocketHandler.initSocket("140.113.167.14", 9000);
         SocketHandler.writeToSocket(cmd);
         Log.d("Mylog", "QueryItems::command:" + cmd);
         String output = SocketHandler.getOutput();
-        while(output == null || !output.contains("QUERY_REPLY") ) {
-            //return;
-            if (output!=null && output.contains("QUERY_NULL"))
-                break;
+        while(output!=null && !(output.contains("QUERY_REPLY") || output.contains("QUERY_NULL")) ) {
+            Log.d("Mylog", "get nothing, redo...");
             output = SocketHandler.getOutput();
-            Log.d("Mylog", "history activity get nothing, re-recieve");
         }
         output = output.replaceAll("QUERY_REPLY\t", "");
         output = output.replaceAll("<N>", "\n");
@@ -328,7 +323,7 @@ public class HistoryActivity extends Activity {
             }
         }
         if(!ok) return "";
-        if(result.contains("UPDATE_ONLINE")  || result.contains("UPDATE_VALUE") || result.contains("UPDATE_BOX"))
+        if( !(result.contains("QUERY_REPLY") || result.contains("QUERY_NULL")) )
             return "";
 
         String[] items = result.split("\t");
@@ -367,5 +362,12 @@ public class HistoryActivity extends Activity {
             //SocketHandler.closeAndRestartSocket();
             task.cancel(true);
         }
+    }
+
+    public void onBackPressed(){
+        Log.d("mylog", "back is pressed");
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        finish();
     }
 }
