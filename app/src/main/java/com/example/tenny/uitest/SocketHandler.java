@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -54,8 +55,12 @@ public class SocketHandler {
         return socket;
     }
 
-    public static synchronized void setSocket(Socket socket){
-        SocketHandler.socket = socket;
+    public static synchronized void setSocketTimeout(int timeout){
+        try {
+            socket.setSoTimeout(timeout);
+        } catch (SocketException e) {
+            System.out.println("Error setSocketTimeout: "+e.getMessage());
+        }
     }
 
     public static synchronized String getOutput(){
@@ -64,7 +69,7 @@ public class SocketHandler {
             int i;
             List<Byte> buffer = new ArrayList<Byte>();;
             //byte[] buffer = new byte[32768];
-            byte[] readbyte = new byte[1024];
+            byte[] readbyte = new byte[2048];
             try {
                 while((i=in.read(readbyte)) != -1) {
                     for(int j=0; j<i; j++) {
@@ -73,7 +78,7 @@ public class SocketHandler {
                     //to test if <END> received
                     String s= new String(readbyte, 0, i);
                     readbyte = null;
-                    readbyte = new byte[1024];
+                    readbyte = new byte[2048];
                     Log.d("Mylog", "i=" + i + ", s="+s);
                     if(s.contains("<END>"))
                         break;

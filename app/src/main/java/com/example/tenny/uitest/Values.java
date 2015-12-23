@@ -1,6 +1,7 @@
 package com.example.tenny.uitest;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -105,5 +106,20 @@ public class Values extends Activity {
         super.onPause();
         if(task!=null)
             task.cancel(true);
+    }
+
+    public void onBackPressed(){
+        Log.d("mylog", "back is pressed");
+        if(task!=null) {
+            task.cancel(true);
+        }
+        Thread[] threads = new Thread[Thread.activeCount()];  //close all running threads
+        Thread.enumerate(threads);
+        for (Thread t : threads) {
+            if(t!=null) t.interrupt();
+        }
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        finish();
     }
 }

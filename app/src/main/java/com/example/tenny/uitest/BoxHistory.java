@@ -224,6 +224,7 @@ public class BoxHistory extends Activity {
         }
         @Override
         protected void onProgressUpdate(String... values) {
+            if(values[0] == null || values[0].length()==0) return;
             Scanner scanner = new Scanner(values[0]);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
@@ -271,7 +272,7 @@ public class BoxHistory extends Activity {
         String result;
         result = SocketHandler.getOutput();
         if(result != null && !(result.contains("QUERY_REPLY") || result.contains("QUERY_NULL")) )
-            return UpdateStatus();
+            return null;
         Log.d("Mylog", "update status receive:" + result);
         //result = result.replaceAll("UPDATE_WH_HISTORY\t" + realname + "\t", "");
         result = result.replaceAll("<N>", "\n");
@@ -292,6 +293,14 @@ public class BoxHistory extends Activity {
 
     public void onBackPressed(){
         Log.d("mylog", "back is pressed");
+        if(task!=null) {
+            task.cancel(true);
+        }
+        Thread[] threads = new Thread[Thread.activeCount()];  //close all running threads
+        Thread.enumerate(threads);
+        for (Thread t : threads) {
+            if(t!=null) t.interrupt();
+        }
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         finish();

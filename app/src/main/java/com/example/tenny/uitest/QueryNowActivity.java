@@ -173,9 +173,12 @@ public class QueryNowActivity extends Activity{
             while(!isCancelled()){
                 try {
                     //Thread.sleep(10000);
+                    if(isCancelled()) break;
                     Log.d("Mylog", "UpdateTask do...");
                     String s = UpdateStatus();
+                    if(isCancelled()) break;
                     publishProgress(s);
+                    if(isCancelled()) break;
                     /*if (isCancelled()) {
                         Log.d("Mylog", "UpdateTask isCancelled()");
                         SocketHandler.closeAndRestartSocket();
@@ -192,6 +195,7 @@ public class QueryNowActivity extends Activity{
         }
         @Override
         protected void onProgressUpdate(String... values) {
+            if(values[0] == null || values[0].length()==0) return;
             Scanner scanner = new Scanner(values[0]);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
@@ -258,6 +262,21 @@ public class QueryNowActivity extends Activity{
             //SocketHandler.closeAndRestartSocket();
             task.cancel(true);
         }
+    }
+
+    public void onBackPressed(){
+        Log.d("mylog", "back is pressed");
+        if(task!=null) {
+            task.cancel(true);
+        }
+        Thread[] threads = new Thread[Thread.activeCount()];  //close all running threads
+        Thread.enumerate(threads);
+        for (Thread t : threads) {
+            if(t!=null) t.interrupt();
+        }
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        finish();
     }
 }
 

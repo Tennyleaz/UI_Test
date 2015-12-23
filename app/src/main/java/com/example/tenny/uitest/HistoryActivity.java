@@ -39,7 +39,7 @@ public class HistoryActivity extends Activity {
     private int mymonth, myyear, mydate;
     private String realgroup, realname;
     private AsyncTask task = null;
-    private boolean isImport;
+    private boolean isImport, active;
     private String importItemName;
     private int importNumber;
     @Override
@@ -65,6 +65,7 @@ public class HistoryActivity extends Activity {
         date_btn.setOnClickListener(onclick);
         result = new ArrayList<String>();
         pd = ProgressDialog.show(HistoryActivity.this, "LOADING", "Fetching data, \nPlease wait...");
+        active = false;
         //開啟一個新線程，在新線程裡執行耗時的方法
         new Thread(new Runnable() {
             @Override
@@ -121,6 +122,7 @@ public class HistoryActivity extends Activity {
             Log.d("Mylog", "handleMessage is called");
             updateUI();
             pd.dismiss();// 關閉ProgressDialog
+            active = true;
             task = new UpdateTask().execute();
         }
     };
@@ -134,6 +136,7 @@ public class HistoryActivity extends Activity {
             //Log.d("Mylog", "s:result=" + s);
             Scanner scanner = new Scanner(s);
             while (scanner.hasNextLine()) {
+                if(!active) return;
                 String line = scanner.nextLine();
                 if(line.contains("QUERY_NULL"))
                     continue;
@@ -148,16 +151,22 @@ public class HistoryActivity extends Activity {
                 row.setLayoutParams(tableRowParams);
                 TL.addView(row);
                 //process each item
-                String[] items = line.split("\t");
+                String[] items = line.split("\t", -1);
                 for (int i = 0; i < items.length; i++) {
-                    if(i==0)
-                        items[i] = items[i].replaceAll(myyear + "/", "");
                     TextView tv = new TextView(this);
                     tv.setMaxEms(12);
                     TableRow.LayoutParams tlr = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
                     tlr.setMargins(1, 0, 1, 0);
                     tv.setLayoutParams(tlr);
-                    tv.setText(items[i]);
+                    if(i==0) {
+                        String temp[] = items[i].split(" ");
+                        if(temp.length>=2)
+                            tv.setText(temp[1]);
+                        else
+                            tv.setText(temp[0]);
+                    } else {
+                        tv.setText(items[i]);
+                    }
                     tv.setBackgroundColor(Color.parseColor("#f3f3f3"));
                     row.addView(tv);
                 }
@@ -230,9 +239,13 @@ public class HistoryActivity extends Activity {
             while(!isCancelled()){
                 try {
                     //Thread.sleep(10000);
+                    if(isCancelled()) break;
                     Log.d("Mylog", "UpdateTask do...");
+                    if(isCancelled()) break;
                     String s = UpdateStatus();
+                    if(isCancelled()) break;
                     publishProgress(s);
+                    if(isCancelled()) break;
                     /*if (isCancelled()) {
                         Log.d("Mylog", "UpdateTask isCancelled()");
                         SocketHandler.closeAndRestartSocket();
@@ -249,9 +262,10 @@ public class HistoryActivity extends Activity {
         }
         @Override
         protected void onProgressUpdate(String... values) {
-            //if
+            if(values[0] == null || values[0].length()==0) return;
             Scanner scanner = new Scanner(values[0]);
             while (scanner.hasNextLine()) {
+                if(!active) return;
                 String line = scanner.nextLine();
                 if(realgroup.equals("WH_HISTORY")) {  //update 進出貨情況
                     //message.setVisibility(View.GONE);
@@ -273,7 +287,15 @@ public class HistoryActivity extends Activity {
                         TableRow.LayoutParams tlr = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
                         tlr.setMargins(1, 0, 1, 0);
                         tv.setLayoutParams(tlr);
-                        tv.setText(items[i]);
+                        if(i==0) {
+                            String temp[] = items[i].split(" ");
+                            if(temp.length>=2)
+                                tv.setText(temp[1]);
+                            else
+                                tv.setText(temp[0]);
+                        } else {
+                            tv.setText(items[i]);
+                        }
                         tv.setBackgroundColor(Color.parseColor("#f3f3f3"));
                         row.addView(tv);
                     }
@@ -366,6 +388,15 @@ public class HistoryActivity extends Activity {
 
     public void onBackPressed(){
         Log.d("mylog", "back is pressed");
+        if(task!=null) {
+            task.cancel(true);
+        }
+        Thread[] threads = new Thread[Thread.activeCount()];  //close all running threads
+        Thread.enumerate(threads);
+        for (Thread t : threads) {
+            if(t!=null) t.interrupt();
+        }
+        active = false;
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         finish();

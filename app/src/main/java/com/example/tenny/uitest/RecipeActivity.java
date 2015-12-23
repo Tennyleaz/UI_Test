@@ -31,6 +31,7 @@ public class RecipeActivity extends Activity {
     static private TableLayout TL;
     private Button date_btn;
     private int mymonth, myyear, mydate;
+    private boolean active = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -138,9 +139,9 @@ public class RecipeActivity extends Activity {
             Log.d("Mylog", "get nothing, redo...");
             result = SocketHandler.getOutput();
         }
-        result = result.replaceAll("QUERY_REPLY\t", "");
-        result = result.replaceAll("<N>", "\n");
-        result = result.replaceAll("<END>", "");
+        //result = result.replaceAll("QUERY_REPLY\t", "");
+        //result = result.replaceAll("<N>", "\n");
+        //result = result.replaceAll("<END>", "");
     }
 
     Handler handler = new Handler() {
@@ -149,6 +150,7 @@ public class RecipeActivity extends Activity {
             //t1.setText(result);
             update();
             pd.dismiss();// 關閉ProgressDialog
+            active = true;
             task = new UpdateTask().execute();
         }
     };
@@ -207,84 +209,93 @@ public class RecipeActivity extends Activity {
         }
 
         //display table
-        Scanner scanner = new Scanner(result);
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            Log.d("mylog", "line=" + line);
-            //if(line.contains("QUERY_NULL") || line.contains("UPDATE_VALUE") || line.contains("UPDATE_BOX") || line.contains("BOX_RECENT") || line.contains("UPDATE_ONLINE") || line.contains("SCHEDULE"))
-            //    continue;
-            //if(!(line.contains("QUERY_REPLY") || line.contains("QUERY_NULL")))
-            //    continue;
-            if(line.contains("QUERY_NULL"))
-                continue;
-            // process the line
-            TableRow row = new TableRow(this);
-            row.setBackgroundColor(Color.parseColor("#bbbbbb"));//f3f3f3
-            //set margin
-            row.setLayoutParams(tableRowParams);
-            TL.addView(row);
-            //process each item
-            String[] items = line.split("\t");
-            for(int i=0; i<items.length; i++) {
-                if(i==items.length-1 && activityName.equals("配料歷史"))
-                    break;
-                TextView tv = new TextView(this);
-                if(i==0 && activityName.equals("加香情形")) {
-                    tv.setText("加香槽 " + items[i]);
-                } else if(i==0 && activityName.equals("換牌情形")) {  // 0=gray, 1=red, 2=yellow, 3=green
-                    switch (items[i]) {
-                        case "CM":
-                            tv.setText("捲菸機 " + items[i+1]);
-                            break;
-                        case "PM":
-                            tv.setText("包裝機 " + items[i+1]);
-                            break;
-                        case "FF":
-                            tv.setText("濾嘴機 " + items[i+1]);
-                            break;
-                        default:
-                            tv.setText(items[i]);
+        String[] lines = result.split("<END>");
+        for(String s: lines) {
+            if( ! (s.contains("QUERY_REPLY") || s.contains("QUERY_NULL")) ) continue;
+            s = s.replaceAll("QUERY_REPLY\t", "");
+            s = s.replaceAll("<N>", "\n");
+            s = s.replaceAll("<END>", "");
+            Log.d("Mylog", "s in line=" + s);
+            Scanner scanner = new Scanner(s);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                Log.d("mylog", "line=" + line);
+                //if(line.contains("QUERY_NULL") || line.contains("UPDATE_VALUE") || line.contains("UPDATE_BOX") || line.contains("BOX_RECENT") || line.contains("UPDATE_ONLINE") || line.contains("SCHEDULE"))
+                //    continue;
+                //if(!(line.contains("QUERY_REPLY") || line.contains("QUERY_NULL")))
+                //    continue;
+                if (line.contains("QUERY_NULL"))
+                    continue;
+                // process the line
+                TableRow row = new TableRow(this);
+                row.setBackgroundColor(Color.parseColor("#bbbbbb"));//f3f3f3
+                //set margin
+                row.setLayoutParams(tableRowParams);
+                TL.addView(row);
+                //process each item
+                String[] items = line.split("\t");
+                for (int i = 0; i < items.length; i++) {
+                    if (i == items.length - 1 && activityName.equals("配料歷史"))
+                        break;
+                    TextView tv = new TextView(this);
+                    if (i == 0 && activityName.equals("加香情形")) {
+                        if(!isInteger(items[i])) return;
+                        tv.setText("加香槽 " + items[i]);
+                    } else if (i == 0 && activityName.equals("換牌情形")) {  // 0=gray, 1=red, 2=yellow, 3=green
+                        switch (items[i]) {
+                            case "CM":
+                                tv.setText("捲菸機 " + items[i + 1]);
+                                break;
+                            case "PM":
+                                tv.setText("包裝機 " + items[i + 1]);
+                                break;
+                            case "FF":
+                                tv.setText("濾嘴機 " + items[i + 1]);
+                                break;
+                            default:
+                                tv.setText(items[i]);
+                        }
+                        tv.setMaxEms(12);
+                        tv.setLayoutParams(tlr);
+                        tv.setBackgroundColor(Color.parseColor("#f3f3f3"));
+                        tv.setTextSize(18);
+                        row.addView(tv);
+
+                        TextView tvb = new TextView(this);
+                        tvb.setMaxEms(12);
+                        tvb.setLayoutParams(tlr);
+                        tvb.setBackgroundColor(Color.parseColor("#f3f3f3"));
+                        tvb.setText(items[3]);
+                        tvb.setTextSize(18);
+                        switch (items[2]) {
+                            case "0":
+                                tvb.setTextColor(getResources().getColor(R.color.swaplight_grey));
+                                break;
+                            case "1":
+                                tvb.setTextColor(getResources().getColor(R.color.swaplight_red));
+                                break;
+                            case "2":
+                                tvb.setTextColor(getResources().getColor(R.color.swaplight_yellow_text));
+                                break;
+                            case "3":
+                                tvb.setTextColor(getResources().getColor(R.color.swaplight_green));
+                                break;
+                        }
+                        row.addView(tvb);
+                        break;
+                    } else {
+                        tv.setText(items[i]);
                     }
+                    if (activityName.equals("加香情形"))
+                        tv.setTextSize(18);
                     tv.setMaxEms(12);
                     tv.setLayoutParams(tlr);
                     tv.setBackgroundColor(Color.parseColor("#f3f3f3"));
-                    tv.setTextSize(18);
                     row.addView(tv);
-
-                    TextView tvb = new TextView(this);
-                    tvb.setMaxEms(12);
-                    tvb.setLayoutParams(tlr);
-                    tvb.setBackgroundColor(Color.parseColor("#f3f3f3"));
-                    tvb.setText(items[3]);
-                    tvb.setTextSize(18);
-                    switch (items[2]) {
-                        case "0":
-                            tvb.setTextColor(getResources().getColor(R.color.swaplight_grey));
-                            break;
-                        case "1":
-                            tvb.setTextColor(getResources().getColor(R.color.swaplight_red));
-                            break;
-                        case "2":
-                            tvb.setTextColor(getResources().getColor(R.color.swaplight_yellow_text));
-                            break;
-                        case "3":
-                            tvb.setTextColor(getResources().getColor(R.color.swaplight_green));
-                            break;
-                    }
-                    row.addView(tvb);
-                    break;
-                } else {
-                    tv.setText(items[i]);
                 }
-                if(activityName.equals("加香情形"))
-                    tv.setTextSize(18);
-                tv.setMaxEms(12);
-                tv.setLayoutParams(tlr);
-                tv.setBackgroundColor(Color.parseColor("#f3f3f3"));
-                row.addView(tv);
             }
+            scanner.close();
         }
-        scanner.close();
 
         if(TL.getChildCount() == 0) {
             updateTime.setVisibility(View.VISIBLE);
@@ -303,8 +314,12 @@ public class RecipeActivity extends Activity {
             while(!isCancelled()){
                 try {
                     Log.d("Mylog", "UpdateTask do...");
-                    String s = UpdateStatus();
-                    publishProgress(s);
+                    if(isCancelled()) break;
+                    if (!active) return null;
+                    result = SocketHandler.getOutput();
+                    if(isCancelled()) break;
+                    publishProgress(result);
+                    if(isCancelled()) break;
                 } catch (Exception e) {
                     Log.e("Mylog", e.toString(), e);
                 }
@@ -313,39 +328,44 @@ public class RecipeActivity extends Activity {
         }
         @Override
         protected void onProgressUpdate(String... values) {
-            Scanner scanner = new Scanner(values[0]);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                //if(line.contains("QUERY_NULL") || line.contains("UPDATE_VALUE") || line.contains("UPDATE_BOX") || line.contains("BOX_RECENT") || line.contains("UPDATE_ONLINE") || line.contains("SCHEDULE"))
-                if(!(line.contains("QUERY_REPLY") || line.contains("QUERY_NULL")))
-                    continue;
-                if(line.contains("QUERY_NULL"))
-                    continue;
-                //message.setVisibility(View.GONE);
-                // process the line
-                TableRow row = new TableRow(RecipeActivity.this);
-                row.setBackgroundColor(Color.parseColor("#bbbbbb"));//f3f3f3
-                //set margin
-                TableLayout.LayoutParams tableRowParams=
-                        new TableLayout.LayoutParams
-                                (TableLayout.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT);
-                tableRowParams.setMargins(1, 1, 1, 1);
-                row.setLayoutParams(tableRowParams);
-                TL.addView(row, 0);
-                //process each item
-                String[] items = line.split("\t");
-                for(int i=0; i<items.length; i++) {
-                    TextView tv = new TextView(RecipeActivity.this);
-                    tv.setMaxEms(8);
-                    TableRow.LayoutParams tlr = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-                    tlr.setMargins(1, 0, 1, 0);
-                    tv.setLayoutParams(tlr);
-                    tv.setText(items[i]);
-                    tv.setBackgroundColor(Color.parseColor("#f3f3f3"));
-                    row.addView(tv);
+            String[] lines = values[0].split("<END>");
+            for(String s: lines) {
+                if (!(s.contains("QUERY_REPLY") || s.contains("QUERY_NULL"))) continue;
+                s = s.replaceAll("QUERY_REPLY\t", "");
+                s = s.replaceAll("<N>", "\n");
+                s = s.replaceAll("<END>", "");
+                Scanner scanner = new Scanner(s);
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    //if(line.contains("QUERY_NULL") || line.contains("UPDATE_VALUE") || line.contains("UPDATE_BOX") || line.contains("BOX_RECENT") || line.contains("UPDATE_ONLINE") || line.contains("SCHEDULE"))
+                    if (line.contains("QUERY_NULL"))
+                        continue;
+                    //message.setVisibility(View.GONE);
+                    // process the line
+                    TableRow row = new TableRow(RecipeActivity.this);
+                    row.setBackgroundColor(Color.parseColor("#bbbbbb"));//f3f3f3
+                    //set margin
+                    TableLayout.LayoutParams tableRowParams =
+                            new TableLayout.LayoutParams
+                                    (TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
+                    tableRowParams.setMargins(1, 1, 1, 1);
+                    row.setLayoutParams(tableRowParams);
+                    TL.addView(row, 0);
+                    //process each item
+                    String[] items = line.split("\t");
+                    for (int i = 0; i < items.length; i++) {
+                        TextView tv = new TextView(RecipeActivity.this);
+                        tv.setMaxEms(8);
+                        TableRow.LayoutParams tlr = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+                        tlr.setMargins(1, 0, 1, 0);
+                        tv.setLayoutParams(tlr);
+                        tv.setText(items[i]);
+                        tv.setBackgroundColor(Color.parseColor("#f3f3f3"));
+                        row.addView(tv);
+                    }
                 }
+                scanner.close();
             }
-            scanner.close();
             if(TL.getChildCount() == 0) {
                 updateTime.setText("No Data");
             }
@@ -365,13 +385,25 @@ public class RecipeActivity extends Activity {
         Log.d("Mylog", "update status receive:" + result);
         //result = result.replaceAll("UPDATE_WH_HISTORY\t" + realname + "\t", "");
         result = result.replaceAll("<N>", "\n");
-        result = result.replaceAll("<END>", "");
+        //result = result.replaceAll("<END>", "");
         return result;
     }
 
+    public static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch(NumberFormatException e) {
+            return false;
+        } catch(NullPointerException e) {
+            return false;
+        }
+        // only got here if we didn't return false
+        return true;
+    }
 
     public void onPause() {
         super.onPause();
+        active = false;
         Log.d("Mylog", "Recipe avtivity paused");
         if(task!=null) {
             Log.d("Mylog", "task.cancel(true);");
@@ -384,6 +416,17 @@ public class RecipeActivity extends Activity {
         Log.d("mylog", "back is pressed");
         if(task!=null) {
             task.cancel(true);
+        }
+        active = false;
+        Thread[] threads = new Thread[Thread.activeCount()];  //close all running threads
+        Thread.enumerate(threads);
+        for (Thread t : threads) {
+            if(t!=null) t.interrupt();
+        }
+        if(task!=null) {
+            Log.d("mylog", "task is " + task.getStatus());
+        } else {
+            Log.d("mylog", "task is null!");
         }
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

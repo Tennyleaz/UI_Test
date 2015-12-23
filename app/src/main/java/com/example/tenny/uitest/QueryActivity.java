@@ -176,9 +176,13 @@ public class QueryActivity extends Activity {
             while(!isCancelled()){
                 try {
                     //Thread.sleep(10000);
+                    if(isCancelled()) break;
                     Log.d("Mylog", "UpdateTask do...");
+                    if(isCancelled()) break;
                     String s = UpdateStatus();
+                    if(isCancelled()) break;
                     publishProgress(s);
+                    if(isCancelled()) break;
                     /*if (isCancelled()) {
                         Log.d("Mylog", "UpdateTask isCancelled()");
                         SocketHandler.closeAndRestartSocket();
@@ -195,6 +199,7 @@ public class QueryActivity extends Activity {
         }
         @Override
         protected void onProgressUpdate(String... values) {
+            if(values[0] == null || values[0].length()==0) return;
             Scanner scanner = new Scanner(values[0]);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
@@ -242,7 +247,7 @@ public class QueryActivity extends Activity {
         String result;
         result = SocketHandler.getOutput();
         if(result != null && !(result.contains("QUERY_REPLY") || result.contains("QUERY_NULL")) )
-            return UpdateStatus();
+            return null;
         Log.d("Mylog", "QueryActivity update status " + realname + " receive:" + result);
         result = result.replaceAll("UPDATE_WH_HISTORY\t" + realname + "\t", "");
         result = result.replaceAll("QUERY_REPLY\t", "");
@@ -263,6 +268,14 @@ public class QueryActivity extends Activity {
 
     public void onBackPressed(){
         Log.d("mylog", "back is pressed");
+        if(task!=null) {
+            task.cancel(true);
+        }
+        Thread[] threads = new Thread[Thread.activeCount()];  //close all running threads
+        Thread.enumerate(threads);
+        for (Thread t : threads) {
+            if(t!=null) t.interrupt();
+        }
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         finish();

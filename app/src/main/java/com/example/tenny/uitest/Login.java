@@ -33,6 +33,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class Login extends ActionBarActivity {
+
     private EditText username;
     private EditText password;
     private Button login_btn;
@@ -44,7 +45,7 @@ public class Login extends ActionBarActivity {
     private static short connected;
     private static int rebootCount;
     private AsyncTask task;
-    private static String BoardID = "MI_1";
+    private static String BoardID = "MI_6";
     //private Thread t;
 
     @Override
