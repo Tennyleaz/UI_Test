@@ -82,4 +82,24 @@
         android:layout_below="@+id/login_btn"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="主管查詢1"
+        android:id="@+id/appID"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="vOuO"
+        android:id="@+id/versionNumber"
+        android:layout_alignBottom="@+id/appID"
+        android:layout_toEndOf="@+id/appID"
+        android:layout_marginLeft="8dp" />
+
 </RelativeLayout>

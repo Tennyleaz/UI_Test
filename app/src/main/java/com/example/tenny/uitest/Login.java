@@ -38,7 +38,7 @@ public class Login extends ActionBarActivity {
     private EditText password;
     private Button login_btn;
     private static TextView message;
-    static final String SERVERIP = "140.113.167.14";//"192.168.1.250";
+    static final String SERVERIP = "192.168.1.250";//"140.113.167.14";
     static final int SERVERPORT = 9000; //8000= echo server, 9000=real server
     private String str1="0",str2="0";
     private static ProgressDialog pd;
@@ -46,6 +46,7 @@ public class Login extends ActionBarActivity {
     private static int rebootCount;
     private AsyncTask task;
     private static String BoardID = "MI_6";
+    static final String version = "v1.2";
     //private Thread t;
 
     @Override
@@ -68,9 +69,15 @@ public class Login extends ActionBarActivity {
         login_btn = (Button) findViewById(R.id.login_btn);
         login_btn.setOnClickListener(onclick);
 
+        TextView appid = (TextView) findViewById(R.id.appID);
+        TextView ver = (TextView) findViewById(R.id.versionNumber);
+
         final SharedPreferences settings = getApplicationContext().getSharedPreferences("EC510", 0);
-        BoardID = "MI_" + settings.getString("board_ID", "1");
+        String id = settings.getString("board_ID", "1");
+        BoardID = "MI_" + id;
         Log.d("mylog", "BOARD_ID=" + BoardID);
+        appid.setText("主管查詢" + id);
+        ver.setText(version);
 
         if(!isNetworkConnected()){  //close when not connected
             AlertDialog.Builder dialog = new AlertDialog.Builder(Login.this);
