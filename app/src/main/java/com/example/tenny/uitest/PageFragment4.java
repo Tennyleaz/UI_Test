@@ -44,7 +44,7 @@ public class PageFragment4 extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        menuArray = new String[] {"設備狀態", "品管", "現在生產箱數", "歷史箱數", "員工狀態"};
+        menuArray = new String[] {"設備狀態", "品管", "現在生產箱數", "歷史箱數", "員工狀態", "員工差勤"};
         menuAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, menuArray);
         listView4.setAdapter(menuAdapter);
         listView4.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -68,6 +68,9 @@ public class PageFragment4 extends Fragment {
                         break;
                     case 4:
                         intent = new Intent(getActivity(), Workers.class);
+                        break;
+                    case 5:
+                        intent = new Intent(getActivity(), Off_Workers.class);
                         break;
                 }
                 intent.putExtra("ActionName", item);
