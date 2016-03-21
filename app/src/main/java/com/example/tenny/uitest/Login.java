@@ -46,7 +46,7 @@ public class Login extends ActionBarActivity {
     private static int rebootCount;
     private AsyncTask task;
     private static String BoardID = "MI_6";
-    static final String version = "v1.2";
+    static final String version = "v1.0.03";
     //private Thread t;
 
     @Override
