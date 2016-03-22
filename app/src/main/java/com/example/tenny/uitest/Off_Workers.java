@@ -39,6 +39,9 @@ public class Off_Workers extends Activity {
         listAdapterOff1 =  new WorkerAdapter(this, lof1);
         listAdapterOff2 =  new WorkerAdapter(this, lof2);
         listAdapterOff3 =  new WorkerAdapter(this, lof3);
+        listAdapterOff1.setNotifyOnChange(true);
+        listAdapterOff2.setNotifyOnChange(true);
+        listAdapterOff3.setNotifyOnChange(true);
         lvOff1 = (ListView) findViewById(R.id.listViewOff1);
         lvOff2 = (ListView) findViewById(R.id.listViewOff2);
         lvOff3 = (ListView) findViewById(R.id.listViewOff3);
@@ -101,20 +104,20 @@ public class Off_Workers extends Activity {
                         case "5002":
                             //isAbsent = true;
                             listAdapterOff1.add(newWorker);
-                            listAdapterOff1.notifyDataSetChanged();
-                            Log.d("mylog", "found 5002");
+                            //listAdapterOff1.notifyDataSetChanged();
+                            Log.d("mylog", "found 5002!");
                             break;
                         case "5003":
                             //isAbsent = true;
                             listAdapterOff2.add(newWorker);
-                            listAdapterOff2.notifyDataSetChanged();
-                            Log.d("mylog", "found 5003");
+                            //listAdapterOff2.notifyDataSetChanged();
+                            Log.d("mylog", "found 5003!");
                             break;
                         case "5004":
                             //isAbsent = true;
                             listAdapterOff3.add(newWorker);
-                            listAdapterOff3.notifyDataSetChanged();
-                            Log.d("mylog", "found 5004");
+                            //listAdapterOff3.notifyDataSetChanged();
+                            Log.d("mylog", "found 5004!");
                             break;
                     }  //end switch
                     Log.d("mylog", "worker " + newWorker.Name + " goto " + newWorker.WorkPlace + " time:" + newWorker.WorkTime);
@@ -123,19 +126,22 @@ public class Off_Workers extends Activity {
         }
         if(listAdapterOff1.isEmpty()) {
             Worker noWorker = new Worker("", "(無)", "", "");
-            listAdapterOff1.add(noWorker);
-            listAdapterOff1.notifyDataSetChanged();
+            lof1.add(noWorker);
+            //listAdapterOff1.notifyDataSetChanged();
         }
         if(listAdapterOff2.isEmpty()) {
             Worker noWorker = new Worker("", "(無)", "", "");
-            listAdapterOff2.add(noWorker);
-            listAdapterOff2.notifyDataSetChanged();
+            lof2.add(noWorker);
+            //listAdapterOff2.notifyDataSetChanged();
         }
         if(listAdapterOff3.isEmpty()) {
             Worker noWorker = new Worker("", "(無)", "", "");
-            listAdapterOff3.add(noWorker);
-            listAdapterOff3.notifyDataSetChanged();
+            lof3.add(noWorker);
+            //listAdapterOff3.notifyDataSetChanged();
         }
+        listAdapterOff1.notifyDataSetChanged();
+        listAdapterOff2.notifyDataSetChanged();
+        listAdapterOff3.notifyDataSetChanged();
         pd.dismiss();// 關閉ProgressDialog
     }
 

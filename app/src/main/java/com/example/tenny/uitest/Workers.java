@@ -20,11 +20,11 @@ import java.util.ArrayList;
 public class Workers extends Activity {
     private AsyncTask task = null;
     private TextView updateTime;
-    private static ListView lv1_1, lv1_2, lv1_3, lv1_4, lv1_5, lv1_6, lv1_7, lv1_8, lv1_9, lv2_1, lv2_2, lv2_3, lv2_4, lv2_5, lv2_6, lv2_7, lv2_8, lv2_9, lvO1, lvO2, lvO3, lvO4, lvO5, lvO6;
+    private static ListView lv1_1, lv1_2, lv1_3, lv1_4, lv1_5, lv1_6, lv1_7, lv1_8, lv1_9, lv2_1, lv2_2, lv2_3, lv2_4, lv2_5, lv2_6, lv2_7, lv2_8, lv2_9, lvO1, lvO2, lvO3, lvO4, lvO5, lvO6, lvO7;
     private static WorkerAdapter listAdapter1_1, listAdapter1_2, listAdapter1_3, listAdapter1_4, listAdapter1_5, listAdapter1_6, listAdapter1_7, listAdapter1_8, listAdapter1_9,
             listAdapter2_1, listAdapter2_2, listAdapter2_3, listAdapter2_4, listAdapter2_5, listAdapter2_6, listAdapter2_7, listAdapter2_8, listAdapter2_9,
-            listAdapterO1, listAdapterO2, listAdapterO3, listAdapterO4, listAdapterO5, listAdapterO6;
-    private ArrayList<Worker> lm11, lm12, lm13, lm14, lm15, lm16, lm17, lm18, lm19, lm21, lm22, lm23, lm24, lm25, lm26, lm27, lm28, lm29, lo1, lo2, lo3, lo4, lo5, lo6;
+            listAdapterO1, listAdapterO2, listAdapterO3, listAdapterO4, listAdapterO5, listAdapterO6, listAdapterO7;
+    private ArrayList<Worker> lm11, lm12, lm13, lm14, lm15, lm16, lm17, lm18, lm19, lm21, lm22, lm23, lm24, lm25, lm26, lm27, lm28, lm29, lo1, lo2, lo3, lo4, lo5, lo6, lo7;
     private ProgressDialog pd;
     private String schedule_detail, work_area, work_type;
     private boolean needReUpdate=false, afterUpdate=false;
@@ -60,6 +60,7 @@ public class Workers extends Activity {
         lo4 = new ArrayList<Worker>();
         lo5 = new ArrayList<Worker>();
         lo6 = new ArrayList<Worker>();
+        lo7 = new ArrayList<Worker>();
         listAdapter1_1 = new WorkerAdapter(this, lm11);
         listAdapter1_2 = new WorkerAdapter(this, lm12);
         listAdapter1_3 = new WorkerAdapter(this, lm13);
@@ -84,6 +85,7 @@ public class Workers extends Activity {
         listAdapterO4 =  new WorkerAdapter(this, lo4);
         listAdapterO5 =  new WorkerAdapter(this, lo5);
         listAdapterO6 =  new WorkerAdapter(this, lo6);
+        listAdapterO7 =  new WorkerAdapter(this, lo7);
         lv1_1 = (ListView) findViewById(R.id.listView1_1);
         lv1_2 = (ListView) findViewById(R.id.listView1_2);
         lv1_3 = (ListView) findViewById(R.id.listView1_3);
@@ -126,12 +128,14 @@ public class Workers extends Activity {
         lvO4 = (ListView) findViewById(R.id.listViewO4);
         lvO5 = (ListView) findViewById(R.id.listViewO5);
         lvO6 = (ListView) findViewById(R.id.listViewO6);
+        lvO7 = (ListView) findViewById(R.id.listViewO7);
         lvO1.setAdapter(listAdapterO1);
         lvO2.setAdapter(listAdapterO2);
         lvO3.setAdapter(listAdapterO3);
         lvO4.setAdapter(listAdapterO4);
         lvO5.setAdapter(listAdapterO5);
         lvO6.setAdapter(listAdapterO6);
+        lvO7.setAdapter(listAdapterO7);
     }
 
     @Override
@@ -210,6 +214,20 @@ public class Workers extends Activity {
                 if(w.length >= 4) {
                     Worker newWorker = new Worker(w[0], w[1], w[2], w[3]);
                     Log.d("mylog", "new worker:" + newWorker.Name + "/" + newWorker.WorkPlace + "/" + newWorker.WorkTime);
+                    boolean isAbsent = false;
+                    switch (newWorker.WorkTime) {
+                        case "5002":
+                            isAbsent = true;
+                            break;
+                        case "5003":
+                            isAbsent = true;
+                            break;
+                        case "5004":
+                            isAbsent = true;
+                            break;
+                    }
+                    if(isAbsent)
+                        continue;
 
                     switch (w[3]) {
                         case "6000":
@@ -284,9 +302,88 @@ public class Workers extends Activity {
                         case "6091":
                             listAdapter2_9.add(newWorker);
                             break;
+                        case "6999":  //其他
+                            listAdapterO7.add(newWorker);
+                            break;
                     } //end switch
                 }
             } //end for
+        }
+        Worker noWorker = new Worker("", "(無)", "", "");
+        if(listAdapter1_1.isEmpty()) {
+            listAdapter1_1.add(noWorker);
+        }
+        if(listAdapter1_2.isEmpty()) {
+            listAdapter1_2.add(noWorker);
+        }
+        if(listAdapter1_3.isEmpty()) {
+            listAdapter1_3.add(noWorker);
+        }
+        if(listAdapter1_4.isEmpty()) {
+            listAdapter1_4.add(noWorker);
+        }
+        if(listAdapter1_5.isEmpty()) {
+            listAdapter1_5.add(noWorker);
+        }
+        if(listAdapter1_6.isEmpty()) {
+            listAdapter1_6.add(noWorker);
+        }
+        if(listAdapter1_7.isEmpty()) {
+            listAdapter1_7.add(noWorker);
+        }
+        if(listAdapter1_8.isEmpty()) {
+            listAdapter1_8.add(noWorker);
+        }
+        if(listAdapter1_9.isEmpty()) {
+            listAdapter1_9.add(noWorker);
+        }
+        if(listAdapter2_1.isEmpty()) {
+            listAdapter2_1.add(noWorker);
+        }
+        if(listAdapter2_2.isEmpty()) {
+            listAdapter2_2.add(noWorker);
+        }
+        if(listAdapter2_3.isEmpty()) {
+            listAdapter2_3.add(noWorker);
+        }
+        if(listAdapter2_4.isEmpty()) {
+            listAdapter2_4.add(noWorker);
+        }
+        if(listAdapter2_5.isEmpty()) {
+            listAdapter2_5.add(noWorker);
+        }
+        if(listAdapter2_6.isEmpty()) {
+            listAdapter2_6.add(noWorker);
+        }
+        if(listAdapter2_7.isEmpty()) {
+            listAdapter2_7.add(noWorker);
+        }
+        if(listAdapter2_8.isEmpty()) {
+            listAdapter2_8.add(noWorker);
+        }
+        if(listAdapter2_9.isEmpty()) {
+            listAdapter2_9.add(noWorker);
+        }
+        if(listAdapterO1.isEmpty()) {
+            listAdapterO1.add(noWorker);
+        }
+        if(listAdapterO2.isEmpty()) {
+            listAdapterO2.add(noWorker);
+        }
+        if(listAdapterO3.isEmpty()) {
+            listAdapterO3.add(noWorker);
+        }
+        if(listAdapterO4.isEmpty()) {
+            listAdapterO4.add(noWorker);
+        }
+        if(listAdapterO5.isEmpty()) {
+            listAdapterO5.add(noWorker);
+        }
+        if(listAdapterO6.isEmpty()) {
+            listAdapterO6.add(noWorker);
+        }
+        if(listAdapterO7.isEmpty()) {
+            listAdapterO7.add(noWorker);
         }
         pd.dismiss();// 關閉ProgressDialog
     }

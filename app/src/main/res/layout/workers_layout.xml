@@ -169,6 +169,14 @@
                 android:id="@+id/textView33"
                 android:layout_column="14"
                 android:layout_row="0"/>
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="其他"
+                android:id="@+id/textView34"
+                android:layout_column="15"
+                android:layout_row="0"/>
 
             <TextView
                 android:layout_width="120dp"
@@ -513,6 +521,14 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/listViewO6"
                 android:layout_column="14"
+                android:layout_row="1"
+                android:layout_rowSpan="4"
+                android:layout_gravity="fill_vertical"/>
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/listViewO7"
+                android:layout_column="15"
                 android:layout_row="1"
                 android:layout_rowSpan="4"
                 android:layout_gravity="fill_vertical"/>
